@@ -6,16 +6,13 @@
         <link rel="stylesheet" href="css/styles.css" />
     </head>
     <body>
-        <c:if test="${not empty error}">
-            <span>${error}</span>
-        </c:if>
-        <form method="post" action="login">
+        <form method="post" action="signup">
             <label for="email">Email</label>
             <input id="email" name="email" type="email" placeholder="email" />
             <label for="senha">Senha</label>
             <input id="senha" name="password" type="password" placeholder="senha" />
 
-            <button type="submit">Logar</button>
+            <button type="submit">Cadastrar</button>
         </form>
     </body>
 </html>

@@ -8,16 +8,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import br.ufsm.csi.poowi.model.User;
-import br.ufsm.csi.poowi.service.UserService;
+import br.ufsm.csi.poowi.dao.UserDAO;
 
-@WebServlet("/login")
-public class LoginController extends HttpServlet {
+@WebServlet("/signup")
+public class SignupController extends HttpServlet {
+    private final UserDAO dao = new UserDAO();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/signup.jsp");
 
         rd.forward(req, resp);
     }
@@ -27,19 +27,14 @@ public class LoginController extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
-        UserService us = new UserService();
+        boolean success = dao.createUser(email, password);
 
-        String path = "/WEB-INF/views/login.jsp";
-        User user = us.autenticado(email, password);
+        String path = "/WEB-INF/views/signup.jsp";
 
-        if (user != null) {
-            HttpSession session = req.getSession();
+        if (success) {
+            path = "/WEB-INF/views/login.jsp";
 
-            session.setAttribute("user", user);
-
-            path = "/WEB-INF/views/dashboard.jsp";
-        } else {
-            req.setAttribute("error", "USUÁRIO OU SENHA INCORRETOS");
+            req.setAttribute("message", "Usuário criado com sucesso!");
         }
 
         RequestDispatcher rd = req.getRequestDispatcher(path);
