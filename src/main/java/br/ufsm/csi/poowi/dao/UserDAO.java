@@ -26,6 +26,7 @@ public class UserDAO {
                 user.setEmail(resultSet.getString("email"));
                 user.setPassword(resultSet.getString("password"));
                 user.setDateOfBirth(resultSet.getDate("date_of_birth"));
+                user.setPermission(resultSet.getInt("permission"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

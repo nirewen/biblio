@@ -8,6 +8,7 @@ public class User {
     private String password;
     private String name;
     private Date dateOfBirth;
+    private int permission;
     
     public int getId() {
         return this.id;
@@ -28,6 +29,10 @@ public class User {
     public Date getDateOfBirth() {
         return this.dateOfBirth;
     }
+
+    public int getPermission() {
+        return this.permission;
+    }
     
     public void setId(int value) {
         this.id = value;
@@ -47,6 +52,10 @@ public class User {
 
     public void setDateOfBirth(Date value) {
         this.dateOfBirth = value;
+    }
+
+    public void setPermission(int value) {
+        this.permission = value;
     }
     
 }
