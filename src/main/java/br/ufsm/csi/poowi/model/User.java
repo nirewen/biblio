@@ -29,24 +29,24 @@ public class User {
         return this.dateOfBirth;
     }
     
-    public int setId(int value) {
-        return this.id = value;
+    public void setId(int value) {
+        this.id = value;
     }
 
-    public String setEmail(String value) {
-        return this.email = value;
+    public void setEmail(String value) {
+        this.email = value;
     }
 
-    public String setPassword(String value) {
-        return this.password = value;
+    public void setPassword(String value) {
+        this.password = value;
     }
 
-    public String setName(String value) {
-        return this.name = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
-    public Date setDateOfBirth(Date value) {
-        return this.dateOfBirth = value;
+    public void setDateOfBirth(Date value) {
+        this.dateOfBirth = value;
     }
-
+    
 }

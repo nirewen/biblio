@@ -42,36 +42,36 @@ public class Book {
         return this.year;
     }
 
-    public int setId(int value) {
-        return this.id = value;
+    public void setId(int value) {
+        this.id = value;
     }
 
-    public String setName(String value) {
-        return this.name = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
-    public String setSynopsis(String value) {
-        return this.synopsis = value;
+    public void setSynopsis(String value) {
+        this.synopsis = value;
     }
 
-    public int setPages(int value) {
-        return this.pages = value;
+    public void setPages(int value) {
+        this.pages = value;
     }
 
-    public float setChapters(float value) {
-        return this.chapters = value;
+    public void setChapters(float value) {
+        this.chapters = value;
     }
 
-    public String setAuthor(String value) {
-        return this.author = value;
+    public void setAuthor(String value) {
+        this.author = value;
     }
 
-    public String setPublisher(String value) {
-        return this.publisher = value;
+    public void setPublisher(String value) {
+        this.publisher = value;
     }
 
-    public int setYear(int value) {
-        return this.year = value;
+    public void setYear(int value) {
+        this.year = value;
     }
 
 }
