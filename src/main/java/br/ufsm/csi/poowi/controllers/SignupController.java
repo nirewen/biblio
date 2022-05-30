@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
+import br.ufsm.csi.poowi.dao.UserException;
 
 @WebServlet("/signup")
 public class SignupController extends HttpServlet {
@@ -27,14 +28,18 @@ public class SignupController extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
-        boolean success = dao.createUser(email, password);
-
         String path = "/WEB-INF/views/signup.jsp";
 
-        if (success) {
-            path = "/WEB-INF/views/login.jsp";
+        try {
+            boolean success = dao.createUser(email, password);
 
-            req.setAttribute("message", "Usuário criado com sucesso!");
+            if (success) {
+                path = "/WEB-INF/views/login.jsp";
+
+                req.setAttribute("message", "Usuário criado com sucesso!");
+            }
+        } catch (UserException e) {
+            req.setAttribute("error", e);
         }
 
         RequestDispatcher rd = req.getRequestDispatcher(path);

@@ -20,7 +20,7 @@ public class UserDAO {
 
         return user;
     }
-    
+
     public User getUser(String email) {
         User user = null;
 
@@ -42,7 +42,7 @@ public class UserDAO {
         return user;
     }
 
-    public boolean createUser(String email, String password) {
+    public boolean createUser(String email, String password) throws UserException {
         try (Connection con = new DBConnect().getConnection()) {
             String sql = "INSERT INTO users (email, password, permission) VALUES (?, ?, 16)";
 
@@ -54,7 +54,10 @@ public class UserDAO {
 
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            // doc: https://www.postgresql.org/docs/14/errcodes-appendix.html
+            if (e.getSQLState().equals("23505")) {
+                throw new UserException(UserException.Type.DUPLICATE_USER, "Usuário já registrado");
+            }
         }
 
         return false;

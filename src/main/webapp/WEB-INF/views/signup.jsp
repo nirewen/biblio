@@ -6,6 +6,14 @@
         <link rel="stylesheet" href="css/styles.css" />
     </head>
     <body>
+        <c:if test="${not empty error}">
+            <span>${error.getMessage()}
+            
+            <c:if test='${error.getType().name().equals("DUPLICATE_USER")}'>
+                <a href="./login">Logar?</a>
+            </c:if>
+            </span>
+        </c:if>
         <form method="post" action="signup">
             <label for="email">Email</label>
             <input id="email" name="email" type="email" placeholder="email" />
