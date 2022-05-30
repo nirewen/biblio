@@ -3,7 +3,8 @@
 <%@ page isELIgnored="false" %>
 <html>
     <head>
-        <link rel="stylesheet" href="css/styles.css" />
+        <jsp:include page="../shared/head.jsp" />
+        <title>Dashboard</title>
     </head>
     <body>
         <h1>Hello World!</h1>

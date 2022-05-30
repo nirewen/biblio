@@ -3,7 +3,7 @@
 <%@ page isELIgnored="false" %>
 <html>
     <head>
-        <link rel="stylesheet" href="css/styles.css" />
+        <jsp:include page="../shared/head.jsp" />
     </head>
     <body>
         <c:if test="${not empty error}">
