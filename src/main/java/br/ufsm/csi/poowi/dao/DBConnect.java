@@ -8,6 +8,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class DBConnect {
     private static final String DRIVER = "org.postgresql.Driver";
+    
     private String URL;
     private String USER;
     private String PASS;
@@ -15,9 +16,9 @@ public class DBConnect {
     public DBConnect() {
         Dotenv dotenv = Dotenv.load();
 
-        this.URL = dotenv.get("POSTGRES_URL");
-        this.USER = dotenv.get("POSTGRES_USER");
-        this.PASS = dotenv.get("POSTGRES_PASS");
+        this.URL = "jdbc:postgresql://" + dotenv.get("PGHOST") + ":" + dotenv.get("PGPORT") + "/" + dotenv.get("PGDBNAME");
+        this.USER = dotenv.get("PGUSER");
+        this.PASS = dotenv.get("PGPASS");
     }
 
     public Connection getConnection() {
