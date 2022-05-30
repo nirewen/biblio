@@ -7,6 +7,7 @@
         <title>Dashboard</title>
     </head>
     <body>
+        <jsp:include page="./navbar.jsp" />
         <h1>Hello World!</h1>
         <span>${user.getName()}</span>
     </body>

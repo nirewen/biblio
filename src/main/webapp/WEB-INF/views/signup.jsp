@@ -6,6 +6,7 @@
         <jsp:include page="../shared/head.jsp" />
     </head>
     <body>
+        <jsp:include page="./navbar.jsp" />
         <c:if test="${not empty error}">
             <span>${error.getMessage()}
             
