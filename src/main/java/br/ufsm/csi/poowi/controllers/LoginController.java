@@ -31,6 +31,8 @@ public class LoginController extends HttpServlet {
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
 
         rd.forward(req, resp);
+
+        session.removeAttribute("error");
     }
 
     @Override
