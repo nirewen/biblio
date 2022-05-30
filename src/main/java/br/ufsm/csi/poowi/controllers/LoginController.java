@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.service.UserService;
 
@@ -17,7 +18,16 @@ import br.ufsm.csi.poowi.service.UserService;
 public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+
+        String path = "/WEB-INF/views/login.jsp";
+
+        if (user != null) {
+            path = "/WEB-INF/views/dashboard.jsp";
+        }
+
+        RequestDispatcher rd = req.getRequestDispatcher(path);
 
         rd.forward(req, resp);
     }
@@ -27,17 +37,18 @@ public class LoginController extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
+        UserDAO dao = new UserDAO();
         UserService us = new UserService();
 
         String path = "/WEB-INF/views/login.jsp";
-        User user = us.autenticado(email, password);
 
-        if (user != null) {
-            HttpSession session = req.getSession();
+        User user = dao.getUser(email);
 
-            session.setAttribute("user", user);
-
+        if (us.autenticado(user, password)) {
             path = "/WEB-INF/views/dashboard.jsp";
+
+            HttpSession session = req.getSession();
+            session.setAttribute("user", user);
         } else {
             req.setAttribute("error", "USUÁRIO OU SENHA INCORRETOS");
         }
