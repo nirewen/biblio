@@ -8,9 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.dao.UserException;
+import br.ufsm.csi.poowi.model.User;
 
 @WebServlet("/signup")
 public class SignupController extends HttpServlet {
@@ -18,6 +20,16 @@ public class SignupController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+
+        User user = (User) session.getAttribute("user");
+
+        if (user != null) {
+            resp.sendRedirect(req.getContextPath() + "/dashboard");
+
+            return;
+        }
+
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/signup.jsp");
 
         rd.forward(req, resp);
@@ -28,21 +40,21 @@ public class SignupController extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
-        String path = "/WEB-INF/views/signup.jsp";
-
         try {
             boolean success = dao.createUser(email, password);
 
             if (success) {
-                path = "/WEB-INF/views/login.jsp";
-
                 req.setAttribute("message", "Usuário criado com sucesso!");
+
+                resp.sendRedirect(req.getContextPath() + "/login");
+
+                return;
             }
         } catch (UserException e) {
             req.setAttribute("error", e);
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher(path);
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/signup.jsp");
 
         rd.forward(req, resp);
     }

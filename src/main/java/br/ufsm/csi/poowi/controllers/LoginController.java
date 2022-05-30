@@ -19,15 +19,16 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
+
         User user = (User) session.getAttribute("user");
 
-        String path = "/WEB-INF/views/login.jsp";
-
         if (user != null) {
-            path = "/WEB-INF/views/dashboard.jsp";
+            resp.sendRedirect(req.getContextPath() + "/dashboard");
+
+            return;
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher(path);
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
 
         rd.forward(req, resp);
     }
@@ -40,20 +41,21 @@ public class LoginController extends HttpServlet {
         UserDAO dao = new UserDAO();
         UserService us = new UserService();
 
-        String path = "/WEB-INF/views/login.jsp";
-
         User user = dao.getUser(email);
 
         if (us.autenticado(user, password)) {
-            path = "/WEB-INF/views/dashboard.jsp";
-
             HttpSession session = req.getSession();
+
             session.setAttribute("user", user);
+
+            resp.sendRedirect(req.getContextPath() + "/dashboard");
+
+            return;
         } else {
             req.setAttribute("error", "USUÁRIO OU SENHA INCORRETOS");
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher(path);
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
 
         rd.forward(req, resp);
     }

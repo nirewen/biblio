@@ -9,6 +9,9 @@
         <c:if test="${not empty error}">
             <span>${error}</span>
         </c:if>
+        <c:if test="${not empty message}">
+            <span>${message}</span>
+        </c:if>
         <form method="post" action="login">
             <label for="email">Email</label>
             <input id="email" name="email" type="email" placeholder="email" />
