@@ -1,0 +1,31 @@
+package br.ufsm.csi.poowi.controllers;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import br.ufsm.csi.poowi.model.User;
+
+@WebServlet("/dashboard")
+public class DashboardController extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = (User) req.getAttribute("user");
+
+        if (user == null) {
+            req.setAttribute("error", "Não logado");
+            resp.sendRedirect(req.getContextPath() + "/login");
+
+            return;
+        }
+
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/dashboard.jsp");
+
+        rd.forward(req, resp);
+    }
+}
