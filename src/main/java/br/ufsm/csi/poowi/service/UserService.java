@@ -1,6 +1,5 @@
 package br.ufsm.csi.poowi.service;
 
-import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
 
 public class UserService {
