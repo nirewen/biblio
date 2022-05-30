@@ -4,7 +4,7 @@
 
 <% request.setAttribute("currentPage", request.getAttribute("javax.servlet.forward.request_uri")); %>
 <% request.setAttribute("pages", new String[][]{
-    { "/biblio/home", "Home" }, 
+    { "/biblio/", "Home" }, 
     { "/biblio/signup", "Sign Up" }, 
     { "/biblio/login", "Login" } 
 }); %>
