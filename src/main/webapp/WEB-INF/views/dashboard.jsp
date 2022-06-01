@@ -8,7 +8,9 @@
     </head>
     <body>
         <jsp:include page="../shared/navbar.jsp" />
-        <h1>Hello World!</h1>
-        <span>${user.getName()}</span>
+        <main class="container">
+            <h1>Hello World!</h1>
+            <span>${user.getName()}</span>
+        </main>
     </body>
 </html>
