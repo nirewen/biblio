@@ -9,6 +9,7 @@
         <jsp:include page="../shared/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
+                <h1>Criar uma conta</h1>
                 <form method="post" action="./signup">
                     <div class="mb-3">
                         <label for="email" class="form-label ${not empty error ? 'text-danger' : ''}">Email</label>
