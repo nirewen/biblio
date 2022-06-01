@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.dao.UserException;
+import br.ufsm.csi.poowi.dao.UserException.Type;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.service.UserService;
 
@@ -55,8 +56,7 @@ public class LoginController extends HttpServlet {
 
             return;
         } else {
-            UserException error = new UserException(UserException.Type.INCORRECT_CREDENTIALS,
-                    "Email ou senha incorretos");
+            UserException error = new UserException(Type.INCORRECT_CREDENTIALS, "Email ou senha incorretos");
             req.setAttribute("error", error);
             req.setAttribute("email", email);
         }

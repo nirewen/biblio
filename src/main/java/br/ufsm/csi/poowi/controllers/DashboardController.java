@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import br.ufsm.csi.poowi.dao.UserException;
+import br.ufsm.csi.poowi.dao.UserException.Type;
 import br.ufsm.csi.poowi.model.User;
 
 @WebServlet("/dashboard")
@@ -22,7 +23,7 @@ public class DashboardController extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(UserException.Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
             resp.sendRedirect(req.getContextPath() + "/login");
 
