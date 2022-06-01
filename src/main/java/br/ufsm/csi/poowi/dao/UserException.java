@@ -3,7 +3,8 @@ package br.ufsm.csi.poowi.dao;
 public class UserException extends Throwable {
     public static enum Type {
         DUPLICATE_USER,
-        INCORRECT_CREDENTIALS
+        INCORRECT_CREDENTIALS,
+        LOGGED_OUT
     }
 
     public final Type type;
