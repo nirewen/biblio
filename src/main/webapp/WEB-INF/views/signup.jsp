@@ -4,6 +4,7 @@
 <html>
     <head>
         <jsp:include page="../shared/head.jsp" />
+        <title>Criar uma conta</title>
     </head>
     <body>
         <jsp:include page="../shared/navbar.jsp" />

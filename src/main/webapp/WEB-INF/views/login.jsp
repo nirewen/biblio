@@ -4,6 +4,7 @@
 <html>
     <head>
         <jsp:include page="../shared/head.jsp" />
+        <title>Entrar no bibl.io</title>
     </head>
     <body>
         <jsp:include page="../shared/navbar.jsp" />
