@@ -3,11 +3,17 @@
 <%@ page isELIgnored="false" %>
 
 <% request.setAttribute("currentPage", request.getAttribute("javax.servlet.forward.request_uri")); %>
-<% request.setAttribute("pages", new String[][]{
-    { "/biblio/", "Início", "btn" }, 
-    { "/biblio/login", "Entrar", "btn" },
-    { "/biblio/signup", "Registrar", "btn btn-primary" }
-}); %>
+<% request.setAttribute("pages", session.getAttribute("user") == null 
+    ? new String[][]{
+        { "/biblio/", "Início", "btn" }, 
+        { "/biblio/login", "Entrar", "btn" },
+        { "/biblio/signup", "Registrar", "btn btn-primary" }
+    }
+    : new String[][]{
+        { "/biblio/", "Início", "btn" }, 
+        { "/biblio/logout", "Sair", "btn" }
+    }
+); %>
 
 <nav class="navbar navbar-expand-lg bg-light">
     <div class="container-fluid">
