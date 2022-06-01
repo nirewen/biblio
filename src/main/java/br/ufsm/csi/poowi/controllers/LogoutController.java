@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import br.ufsm.csi.poowi.dao.UserException;
-import br.ufsm.csi.poowi.dao.UserException.Type;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.util.UserException;
+import br.ufsm.csi.poowi.util.UserException.Type;
 
 @WebServlet("/logout")
 public class LogoutController extends HttpServlet {

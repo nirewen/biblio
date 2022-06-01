@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
-import br.ufsm.csi.poowi.dao.UserException;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.util.UserException;
 
 @WebServlet("/signup")
 public class SignupController extends HttpServlet {

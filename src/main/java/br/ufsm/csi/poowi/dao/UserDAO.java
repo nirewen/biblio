@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.util.UserException;
 
 public class UserDAO {
     private User fromResultSet(ResultSet resultSet) throws SQLException {

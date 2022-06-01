@@ -1,4 +1,4 @@
-package br.ufsm.csi.poowi.dao;
+package br.ufsm.csi.poowi.util;
 
 public class UserException extends Throwable {
     public static enum Type {

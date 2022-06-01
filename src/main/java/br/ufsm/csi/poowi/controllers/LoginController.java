@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
-import br.ufsm.csi.poowi.dao.UserException;
-import br.ufsm.csi.poowi.dao.UserException.Type;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.service.UserService;
+import br.ufsm.csi.poowi.util.UserException;
+import br.ufsm.csi.poowi.util.UserException.Type;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
