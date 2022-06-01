@@ -6,7 +6,7 @@
         <jsp:include page="../shared/head.jsp" />
     </head>
     <body>
-        <jsp:include page="./navbar.jsp" />
+        <jsp:include page="../shared/navbar.jsp" />
         
         <h1>Hello World!</h1>
     </body>

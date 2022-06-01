@@ -6,7 +6,7 @@
         <jsp:include page="../shared/head.jsp" />
     </head>
     <body>
-        <jsp:include page="./navbar.jsp" />
+        <jsp:include page="../shared/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
                 <form method="post" action="./signup">
