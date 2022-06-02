@@ -1,6 +1,7 @@
 package br.ufsm.csi.poowi.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,6 +59,31 @@ public class UserDAO {
             // doc: https://www.postgresql.org/docs/14/errcodes-appendix.html
             if (e.getSQLState().equals("23505")) {
                 throw new UserException(UserException.Type.DUPLICATE_USER, "Usuário já registrado");
+            }
+        }
+
+        return false;
+    }
+
+    public boolean updateUser(User newUser)
+            throws UserException {
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "UPDATE users SET email = ?, password = ?, name = ?, date_of_birth = ? WHERE id = ?";
+
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, newUser.getEmail());
+            preparedStatement.setString(2, newUser.getPassword());
+            preparedStatement.setString(3, newUser.getName());
+            preparedStatement.setDate(4, Date.valueOf(newUser.getDateOfBirth().toString()));
+            preparedStatement.setInt(5, newUser.getId());
+
+            preparedStatement.execute();
+
+            return true;
+        } catch (SQLException e) {
+            // doc: https://www.postgresql.org/docs/14/errcodes-appendix.html
+            if (e.getSQLState().equals("23505")) {
+                throw new UserException(UserException.Type.DUPLICATE_USER, "Um usuário com esse email já existe");
             }
         }
 
