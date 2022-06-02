@@ -27,6 +27,7 @@ public class AccountController extends HttpServlet {
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("redirectTo", "/account");
 
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
@@ -40,11 +41,11 @@ public class AccountController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("redirectTo", "/account");
 
             resp.sendRedirect(req.getContextPath() + "/login");
             return;

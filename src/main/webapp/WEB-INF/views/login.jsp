@@ -11,6 +11,9 @@
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
                 <h1>Entrar no bibl.io</h1>
+                <c:if test="${not empty redirectTo}">
+                    <p>Você será redirecionado para <b>${redirectTo}</b></p>
+                </c:if>
                 <form method="post" action="./login">
                     <div class="mb-3">
                         <label for="email" class="form-label ${not empty error ? 'text-danger' : ''}">Email</label>

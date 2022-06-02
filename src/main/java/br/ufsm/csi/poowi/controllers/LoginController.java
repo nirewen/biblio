@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
+
 import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.service.UserService;
@@ -39,8 +41,11 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+
         String email = req.getParameter("email");
         String password = req.getParameter("password");
+        String redirectTo = StringUtils.defaultIfEmpty((String) session.getAttribute("redirectTo"), "/dashboard");
 
         UserDAO dao = new UserDAO();
         UserService us = new UserService();
@@ -48,11 +53,9 @@ public class LoginController extends HttpServlet {
         User user = dao.getUser(email);
 
         if (us.autenticado(user, password)) {
-            HttpSession session = req.getSession();
-
             session.setAttribute("user", user);
 
-            resp.sendRedirect(req.getContextPath() + "/dashboard");
+            resp.sendRedirect(req.getContextPath() + redirectTo);
 
             return;
         } else {
@@ -64,5 +67,7 @@ public class LoginController extends HttpServlet {
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
 
         rd.forward(req, resp);
+
+        session.removeAttribute("redirectTo");
     }
 }

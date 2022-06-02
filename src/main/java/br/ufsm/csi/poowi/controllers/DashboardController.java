@@ -24,6 +24,7 @@ public class DashboardController extends HttpServlet {
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("redirectTo", "/dashboard");
 
             resp.sendRedirect(req.getContextPath() + "/login");
 
