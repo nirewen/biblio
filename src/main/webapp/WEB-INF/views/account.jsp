@@ -14,23 +14,31 @@
                 <form method="post" action="./account">
                     <div class="mb-3">
                         <label for="name" class="form-label">Novo nome</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="não alterado">
+                        <div class="d-flex gap-3">
+                            <input type="text" class="form-control" value="${user.getName()}" readonly>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="não alterado">
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label ${not empty error && error.getType().name().equals("DUPLICATE_USER") ? 'text-danger' : ''}">Email</label>
-                        <input type="email" class="form-control ${not empty error && error.getType().name().equals("DUPLICATE_USER") ? 'border-danger' : ''}" id="email" name="email"  placeholder="não alterado">
+                        <div class="d-flex gap-3">
+                            <input type="email" class="form-control" value="${user.getEmail()}" readonly>
+                            <input type="email" class="form-control ${not empty error && error.getType().name().equals("DUPLICATE_USER") ? 'border-danger' : ''}" id="email" name="email"  placeholder="não alterado">
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="new_password" class="form-label">Nova senha</label>
-                        <input type="password" class="form-control" id="new_password" name="new_password"  placeholder="não alterada">
+                        <div class="d-flex gap-3">
+                            <input type="password" class="form-control ${not empty error && error.getType().name().equals("INCORRECT_CREDENTIALS") ? 'border-danger' : ''}" id="password" name="password" placeholder="senha atual" required>
+                            <input type="password" class="form-control" id="new_password" name="new_password"  placeholder="não alterada">
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="dob" class="form-label">Data de Nascimento</label>
-                        <input type="date" class="form-control" id="dob" name="date_of_birth">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label ${not empty error && error.getType().name().equals("INCORRECT_CREDENTIALS") ? 'text-danger' : ''}">Senha atual</label>
-                        <input type="password" class="form-control ${not empty error && error.getType().name().equals("INCORRECT_CREDENTIALS") ? 'border-danger' : ''}" id="password" name="password" placeholder="insira a senha">
+                        <div class="d-flex gap-3">
+                            <input type="date" class="form-control" value="${user.getDateOfBirth().toString()}" readonly>
+                            <input type="date" class="form-control" id="dob" name="date_of_birth">
+                        </div>
                     </div>
                      <c:if test="${not empty error}">
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
