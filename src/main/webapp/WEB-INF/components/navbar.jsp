@@ -12,6 +12,7 @@
     : new String[][]{
         { "/biblio/", "Início", "btn" }, 
         { "/biblio/dashboard", "Dashboard", "btn" }, 
+        { "/biblio/account", "Conta", "btn" }, 
         { "/biblio/logout", "Sair", "btn" }
     }
 ); %>
