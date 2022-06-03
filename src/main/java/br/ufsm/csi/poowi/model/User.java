@@ -8,8 +8,8 @@ public class User {
     private String password;
     private String name;
     private Date dateOfBirth;
-    private int permission;
-    
+    private int permissions;
+
     public int getId() {
         return this.id;
     }
@@ -21,19 +21,19 @@ public class User {
     public String getPassword() {
         return this.password;
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public Date getDateOfBirth() {
         return this.dateOfBirth;
     }
 
     public int getPermission() {
-        return this.permission;
+        return this.permissions;
     }
-    
+
     public void setId(int value) {
         this.id = value;
     }
@@ -55,7 +55,7 @@ public class User {
     }
 
     public void setPermission(int value) {
-        this.permission = value;
+        this.permissions = value;
     }
-    
+
 }
