@@ -7,7 +7,7 @@
         <title>Entrar no bibl.io</title>
     </head>
     <body>
-        <jsp:include page="../shared/navbar.jsp" />
+        <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
                 <h1>Entrar no bibl.io</h1>

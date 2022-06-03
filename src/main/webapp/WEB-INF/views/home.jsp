@@ -7,7 +7,7 @@
         <title>Página inicial</title>
     </head>
     <body>
-        <jsp:include page="../shared/navbar.jsp" />
+        <jsp:include page="../components/navbar.jsp" />
         
         <h1>Hello World!</h1>
     </body>
