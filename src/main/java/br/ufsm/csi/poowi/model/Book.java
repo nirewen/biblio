@@ -9,37 +9,42 @@ public class Book {
     private String author;
     private String publisher;
     private int year;
+    private String cover;
 
     public int getId() {
         return this.id;
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public String getSynopsis() {
         return this.synopsis;
     }
-    
+
     public int getPages() {
         return this.pages;
     }
-    
+
     public float getChapters() {
         return this.chapters;
     }
-    
+
     public String getAuthor() {
         return this.author;
     }
-    
+
     public String getPublisher() {
         return this.publisher;
     }
-    
+
     public int getYear() {
         return this.year;
+    }
+
+    public String getCover() {
+        return this.cover;
     }
 
     public void setId(int value) {
@@ -72,6 +77,10 @@ public class Book {
 
     public void setYear(int value) {
         this.year = value;
+    }
+
+    public void setCover(String value) {
+        this.cover = value;
     }
 
 }
