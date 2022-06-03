@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import br.ufsm.csi.poowi.model.Book;
+import br.ufsm.csi.poowi.util.DBConnect;
 
 public class BookDAO {
     private Book fromResultSet(ResultSet resultSet) throws SQLException {
