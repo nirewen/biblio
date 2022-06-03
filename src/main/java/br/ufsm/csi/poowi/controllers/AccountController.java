@@ -33,6 +33,9 @@ public class AccountController extends HttpServlet {
             return;
         }
 
+        if (req.getParameter("edit") != null)
+            req.setAttribute("edit", true);
+
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/account.jsp");
 
         rd.forward(req, resp);

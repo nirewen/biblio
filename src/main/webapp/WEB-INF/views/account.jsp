@@ -10,34 +10,60 @@
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
-                <h1>Atualizar informações</h1>
                 <form method="post" action="./account">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h1>Perfil de ${user.getName()}</h1>
+                        <div class="buttons">
+                        <c:choose>
+                            <c:when test="${edit}">
+                                <a href="./account" class="btn btn-light">Cancelar</a>
+                                <button type="submit" class="btn btn-primary">Salvar</button>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="./account?edit" class="btn btn-primary">Editar</a>
+                            </c:otherwise>
+                        </c:choose>
+                        </div>
+                    </div>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Novo nome</label>
+                        <label for="name" class="form-label">Nome</label>
                         <div class="d-flex gap-3">
                             <input type="text" class="form-control" value="${user.getName()}" readonly>
+                            <c:if test="${edit}">
                             <input type="text" class="form-control" id="name" name="name" placeholder="não alterado">
+                            </c:if>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label ${not empty error && error.getType().name().equals("DUPLICATE_USER") ? 'text-danger' : ''}">Email</label>
                         <div class="d-flex gap-3">
                             <input type="email" class="form-control" value="${user.getEmail()}" readonly>
+                            <c:if test="${edit}">
                             <input type="email" class="form-control ${not empty error && error.getType().name().equals("DUPLICATE_USER") ? 'border-danger' : ''}" id="email" name="email"  placeholder="não alterado">
+                            </c:if>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="new_password" class="form-label">Nova senha</label>
+                        <label for="new_password" class="form-label">Senha</label>
                         <div class="d-flex gap-3">
-                            <input type="password" class="form-control ${not empty error && error.getType().name().equals("INCORRECT_CREDENTIALS") ? 'border-danger' : ''}" id="password" name="password" placeholder="senha atual" required>
-                            <input type="password" class="form-control" id="new_password" name="new_password"  placeholder="não alterada">
+                            <c:choose>
+                                <c:when test="${edit}">
+                                    <input type="password" class="form-control ${not empty error && error.getType().name().equals("INCORRECT_CREDENTIALS") ? 'border-danger' : ''}" id="password" name="password" placeholder="senha atual" required>
+                                    <input type="password" class="form-control" id="new_password" name="new_password"  placeholder="não alterada">
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="password" class="form-control ${not empty error && error.getType().name().equals("INCORRECT_CREDENTIALS") ? 'border-danger' : ''}" id="password" name="password" value="passwordpassword" readonly>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="dob" class="form-label">Data de Nascimento</label>
                         <div class="d-flex gap-3">
                             <input type="date" class="form-control" value="${user.getDateOfBirth().toString()}" readonly>
+                            <c:if test="${edit}">
                             <input type="date" class="form-control" id="dob" name="date_of_birth">
+                            </c:if>
                         </div>
                     </div>
                      <c:if test="${not empty error}">
@@ -60,7 +86,6 @@
                             </div>
                         </div>
                     </c:if>
-                    <button type="submit" class="btn btn-primary">Atualizar</button>
                 </form>
             </div>
         </main>
