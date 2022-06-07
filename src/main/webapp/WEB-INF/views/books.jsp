@@ -9,8 +9,13 @@
     <body>
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
-            <div class="d-flex flex-column w-50">
+            <div class="d-flex flex-column w-75">
                 <h1>Livros</h1>
+
+                <c:forEach items="${books}" var="book">
+                    <c:set var="book" value="${book}" scope="request" />
+                    <jsp:include page="../components/book_card.jsp" />
+                </c:forEach>
             </div>
         </main>
     </body>

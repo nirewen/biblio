@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.util.DBConnect;
@@ -87,5 +89,25 @@ public class BookDAO {
         }
 
         return false;
+    }
+
+    public List<Book> getBookList() {
+        ArrayList<Book> books = new ArrayList<>();
+
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "SELECT * FROM books;";
+
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                books.add(this.fromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return books;
     }
 }
