@@ -4,13 +4,21 @@
 <html>
     <head>
         <jsp:include page="../shared/head.jsp" />
-        <title>Livro ${id}</title>
+        <title>Livro ${book.getId()}</title>
     </head>
     <body>
         <jsp:include page="../components/navbar.jsp" />
-        <main class="container d-flex flex-column align-items-center mt-5">
-            <div class="d-flex flex-column w-50">
-                <h1>Livro ${id}</h1>
+        <main class="container d-flex flex-column mt-5">
+            <div class="d-flex gap-5">
+                <img src="${book.getCover().startsWith("data:image/") ? book.getCover() : "/biblio/image/default_cover.png"}" class="rounded w-25" alt="Capa de ${book.getName()}">
+                <div class="d-flex flex-column">
+                    <h1>${book.getName()} <small>${book.getYear()}</small></h1>
+                    <p>${book.getSynopsis()}</p>
+                    <span>${book.getPages()}</span>
+                    <span>${book.getChapters()}</span>
+                    <span>${book.getAuthor()}</span>
+                    <span>${book.getPublisher()}</span>
+                </div>
             </div>
         </main>
     </body>

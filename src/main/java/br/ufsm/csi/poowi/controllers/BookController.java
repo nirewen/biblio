@@ -85,6 +85,15 @@ public class BookController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/books");
 
             return;
+        } else {
+            Book book = dao.getBook(Integer.parseInt(id));
+
+            if (book == null) {
+                resp.sendRedirect(req.getContextPath() + "/books");
+                return;
+            }
+
+            req.setAttribute("book", book);
         }
 
         RequestDispatcher rd = req.getRequestDispatcher(route);
