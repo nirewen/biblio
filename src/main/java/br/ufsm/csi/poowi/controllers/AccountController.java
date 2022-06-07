@@ -27,7 +27,13 @@ public class AccountController extends HttpServlet {
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/account");
+
+            String redirectTo = "/account";
+
+            if (req.getParameter("edit") != null)
+                redirectTo += "?edit";
+
+            session.setAttribute("redirectTo", redirectTo);
 
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
@@ -58,10 +64,13 @@ public class AccountController extends HttpServlet {
         String password = StringUtils.defaultIfEmpty(req.getParameter("new_password"), user.getPassword());
         String currentPassword = req.getParameter("password");
         String name = StringUtils.defaultIfEmpty(req.getParameter("name"), user.getName());
-        String dateOfBirthStr = StringUtils.defaultIfEmpty(req.getParameter("date_of_birth"),
-                user.getDateOfBirth().toString());
+        Date dateOfBirth = user.getDateOfBirth();
 
-        Date dateOfBirth = Date.valueOf(dateOfBirthStr);
+        if (req.getParameter("date_of_birth") != null) {
+            String dateOfBirthStr = req.getParameter("date_of_birth");
+
+            dateOfBirth = Date.valueOf(dateOfBirthStr);
+        }
 
         if (!user.getPassword().equals(currentPassword)) {
             req.setAttribute("error", new UserException(Type.INCORRECT_CREDENTIALS,
