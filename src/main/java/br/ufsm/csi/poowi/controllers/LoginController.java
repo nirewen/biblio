@@ -68,6 +68,7 @@ public class LoginController extends HttpServlet {
 
         rd.forward(req, resp);
 
-        session.removeAttribute("redirectTo");
+        if (req.getAttribute("error") == null)
+            session.removeAttribute("redirectTo");
     }
 }
