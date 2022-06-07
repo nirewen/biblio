@@ -1,6 +1,6 @@
 package br.ufsm.csi.poowi.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class User {
     private int id;
