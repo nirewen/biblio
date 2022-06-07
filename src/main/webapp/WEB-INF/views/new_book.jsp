@@ -10,15 +10,41 @@
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
-                <form method="post" action="./book">
-                    <input type="hidden" name="option" value="add">
+                <form method="post" action="./book" enctype="multipart/form-data">
+                    <input type="hidden" name="option" value="new">
                     <div class="mb-3">
-                        <label for="name">Nome</label>
-                        <input type="text" class="form-control" name="name" />
+                        <label for="cover">Capa</label>
+                        <input type="file" class="form-control" name="cover" id="cover" />
                     </div>
                     <div class="mb-3">
-                        <label for="author">Author</label>
-                        <input type="text" class="form-control" name="author" />
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" name="name" id="name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="synopsis">Sinopse</label>
+                        <textarea class="form-control" rows="4" name="synopsis" id="synopsis"></textarea>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="mb-3 flex-fill">
+                            <label for="pages">Páginas</label>
+                            <input type="number" class="form-control" name="pages" id="pages" />
+                        </div>
+                        <div class="mb-3 flex-fill">
+                            <label for="chapters">Capítulos</label>
+                            <input type="number" class="form-control" name="chapters" id="chapters" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="author">Autor</label>
+                        <input type="text" class="form-control" name="author" id="author" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="publisher">Editora</label>
+                        <input type="text" class="form-control" name="publisher" id="publisher" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="year">Ano</label>
+                        <input type="number" class="form-control" name="year" id="year" />
                     </div>
                     <button type="submit" class="btn btn-primary">Adicionar</button>
                 </form>

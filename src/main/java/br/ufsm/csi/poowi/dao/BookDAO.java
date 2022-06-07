@@ -48,15 +48,21 @@ public class BookDAO {
         return book;
     }
 
-    public boolean createBook(String name, String author) {
+    public boolean createBook(Book book) {
         try (Connection con = new DBConnect().getConnection()) {
             // possível bug: registrar o mesmo livro
             // (pode existir dois autores que fizeram um livro com mesmo nome)
-            String sql = "INSERT INTO books (name, author) VALUES (?, ?)";
+            String sql = "INSERT INTO books (name, synopsis, pages, chapters, author, publisher, year, cover) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, author);
+            preparedStatement.setString(1, book.getName());
+            preparedStatement.setString(2, book.getSynopsis());
+            preparedStatement.setInt(3, book.getPages());
+            preparedStatement.setFloat(4, book.getChapters());
+            preparedStatement.setString(5, book.getAuthor());
+            preparedStatement.setString(6, book.getPublisher());
+            preparedStatement.setInt(7, book.getYear());
+            preparedStatement.setString(8, book.getCover());
 
             preparedStatement.execute();
 
