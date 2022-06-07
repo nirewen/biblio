@@ -13,7 +13,7 @@
                 <form method="post" action="./account">
                     <div class="d-flex align-items-center justify-content-between">
                         <h1>Perfil de ${user.getName()}</h1>
-                        <div class="buttons">
+                        <div class="d-flex gap-2">
                         <c:choose>
                             <c:when test="${edit}">
                                 <a href="./account" class="btn btn-light">Cancelar</a>
