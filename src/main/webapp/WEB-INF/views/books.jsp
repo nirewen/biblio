@@ -10,7 +10,12 @@
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-80">
-                <h1>Livros</h1>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1>Livros</h1>
+                    <c:if test="${user.getPermission() == 8}">
+                    <a href="/biblio/book?option=new" class="btn btn-primary">+ Livro</a>
+                    </c:if>
+                </div>
 
                 <div class="gap-4" style="display: grid; grid-template-columns: repeat(3, 1fr);">
                     <c:forEach items="${books}" var="book">
