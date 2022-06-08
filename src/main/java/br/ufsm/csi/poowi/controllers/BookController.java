@@ -1,7 +1,8 @@
 package br.ufsm.csi.poowi.controllers;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -15,8 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import br.ufsm.csi.poowi.dao.BookDAO;
 import br.ufsm.csi.poowi.model.Book;
@@ -126,6 +127,7 @@ public class BookController extends HttpServlet {
             return;
         }
 
+        int id = NumberUtils.toInt(req.getParameter("id"), dao.nextId());
         String name = req.getParameter("name");
         String synopsis = req.getParameter("synopsis");
         int pages = Integer.parseInt(StringUtils.defaultIfEmpty(req.getParameter("pages"), "0"));
@@ -150,17 +152,18 @@ public class BookController extends HttpServlet {
 
                 return;
             } else {
-                InputStream coverIS = coverFile.getInputStream();
-                byte[] imageBytes = new byte[(int) coverFile.getSize()];
+                String serverPath = "/workspaces/biblio/target";
+                cover = "/biblio/image/covers/" + id + "." + ext;
 
-                coverIS.read(imageBytes, 0, imageBytes.length);
-                coverIS.close();
+                Files.createDirectories(Paths.get(serverPath + "/biblio/image/covers/"));
+                Files.createFile(Paths.get(serverPath + cover));
 
-                cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
+                coverFile.write(serverPath + cover);
             }
         }
 
         if (option.equals("new")) {
+
             Book book = new Book();
 
             book.setName(name);

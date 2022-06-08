@@ -12,7 +12,7 @@
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column mt-5">
             <div class="d-flex gap-5">
-                <img src="${book.getCover().startsWith("data:image/") ? book.getCover() : "/biblio/image/default_cover.png"}" class="rounded w-25" alt="Capa de ${book.getName()}">
+                <img src="${not empty book.getCover() ? book.getCover() : "/biblio/image/default_cover.png"}" class="rounded w-25" alt="Capa de ${book.getName()}">
                 <div class="d-flex flex-column">
                     <h1>${book.getName()} <small>(${book.getYear()})</small></h1>
                     <span><em>${book.getAuthor()}</em></span>

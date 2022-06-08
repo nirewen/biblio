@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,26 @@ import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.util.DBConnect;
 
 public class BookDAO {
+    public int nextId() {
+        int last_value = -1;
+
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "SELECT last_value FROM books_id_seq;";
+
+            Statement statement = con.createStatement();
+
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next())
+                last_value = resultSet.getInt("last_value");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return last_value + 1;
+    }
+
     private Book fromResultSet(ResultSet resultSet) throws SQLException {
         Book book = new Book();
 
