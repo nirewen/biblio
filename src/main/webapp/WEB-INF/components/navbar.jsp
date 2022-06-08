@@ -5,14 +5,11 @@
 <% request.setAttribute("currentPage", request.getAttribute("javax.servlet.forward.request_uri")); %>
 <% request.setAttribute("pages", session.getAttribute("user") == null 
     ? new String[][]{
-        { "/biblio/", "Início", "btn" }, 
-        { "/biblio/login", "Entrar", "btn" },
-        { "/biblio/signup", "Registrar", "btn btn-primary" }
+        { "/biblio/login", "Entrar", "btn btn-primary" },
     }
     : new String[][]{
-        { "/biblio/", "Início", "btn" }, 
         { "/biblio/dashboard", "Dashboard", "btn" }, 
-        { "/biblio/account", "Conta", "btn" }, 
+        { "/biblio/profile", "Perfil", "btn" }, 
         { "/biblio/logout", "Sair", "btn" }
     }
 ); %>
@@ -24,12 +21,20 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex gap-2">
+            <ul class="navbar-nav mb-2 mb-lg-0 d-flex gap-2 flex-fill">
+                <li class="nav-item">
+                    <a class="${currentPage == '/biblio/' ? 'active' : ''} btn" href="/biblio/">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a class="${currentPage == '/biblio/books' ? 'active' : ''} btn" href="/biblio/books">Livros</a>
+                </li>
+                <div class="ms-lg-auto d-flex gap-2">
                 <c:forEach items="${pages}" var="page">
                     <li class="nav-item">
                         <a class="${currentPage == page[0] ? 'active' : ''} ${page[2]}" href="${page[0]}">${page[1]}</a>
                     </li>
                 </c:forEach>
+                </div>
             </ul>
         </div>
     </div>

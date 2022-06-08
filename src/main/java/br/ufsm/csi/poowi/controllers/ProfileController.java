@@ -18,8 +18,8 @@ import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
-@WebServlet("/account")
-public class AccountController extends HttpServlet {
+@WebServlet("/profile")
+public class ProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
@@ -28,7 +28,7 @@ public class AccountController extends HttpServlet {
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
-            String redirectTo = "/account";
+            String redirectTo = "/profile";
 
             if (req.getParameter("edit") != null)
                 redirectTo += "?edit";
@@ -42,7 +42,7 @@ public class AccountController extends HttpServlet {
         if (req.getParameter("edit") != null)
             req.setAttribute("edit", true);
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/account.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
 
         rd.forward(req, resp);
     }
@@ -54,7 +54,7 @@ public class AccountController extends HttpServlet {
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/account");
+            session.setAttribute("redirectTo", "/profile");
 
             resp.sendRedirect(req.getContextPath() + "/login");
             return;
@@ -76,7 +76,7 @@ public class AccountController extends HttpServlet {
             req.setAttribute("error", new UserException(Type.INCORRECT_CREDENTIALS,
                     "Senha atual incorreta"));
 
-            RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/account.jsp");
+            RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
 
             rd.forward(req, resp);
 
@@ -99,7 +99,7 @@ public class AccountController extends HttpServlet {
             req.setAttribute("error", e);
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/account.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
 
         rd.forward(req, resp);
     }

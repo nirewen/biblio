@@ -10,17 +10,17 @@
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
-                <form method="post" action="./account">
+                <form method="post" action="./profile">
                     <div class="d-flex align-items-center justify-content-between">
                         <h1>Perfil de ${user.getName()}</h1>
                         <div class="d-flex gap-2">
                         <c:choose>
                             <c:when test="${edit}">
-                                <a href="./account" class="btn btn-light">Cancelar</a>
+                                <a href="./profile" class="btn btn-light">Cancelar</a>
                                 <button type="submit" class="btn btn-primary">Salvar</button>
                             </c:when>
                             <c:otherwise>
-                                <a href="./account?edit" class="btn btn-primary">Editar</a>
+                                <a href="./profile?edit" class="btn btn-primary">Editar</a>
                             </c:otherwise>
                         </c:choose>
                         </div>
