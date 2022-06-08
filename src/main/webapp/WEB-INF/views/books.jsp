@@ -17,7 +17,7 @@
                     </c:if>
                 </div>
 
-                <div class="gap-4" style="display: grid; grid-template-columns: repeat(3, 1fr);">
+                <div class="gap-4" style="display: grid; grid-template-columns: repeat(6, 1fr);">
                     <c:forEach items="${books}" var="book">
                         <c:set var="book" value="${book}" scope="request" />
                         <jsp:include page="../components/book_card.jsp" />
