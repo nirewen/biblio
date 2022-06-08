@@ -8,7 +8,7 @@ public class User {
     private String password;
     private String name;
     private Date dateOfBirth;
-    private int permissions;
+    private int permission;
 
     public int getId() {
         return this.id;
@@ -31,7 +31,7 @@ public class User {
     }
 
     public int getPermission() {
-        return this.permissions;
+        return this.permission;
     }
 
     public void setId(int value) {
@@ -55,7 +55,7 @@ public class User {
     }
 
     public void setPermission(int value) {
-        this.permissions = value;
+        this.permission = value;
     }
 
 }
