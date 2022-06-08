@@ -16,12 +16,12 @@
                 </c:if>
                 <form method="post" action="./login">
                     <div class="mb-3">
-                        <label for="email" class="form-label ${not empty error ? 'text-danger' : ''}">Email</label>
-                        <input type="email" class="form-control ${not empty error ? 'border-danger' : ''}" id="email" name="email" placeholder="insira o email" value="${email}">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" id="email" name="email" placeholder="insira o email" value="${email}">
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label ${not empty error ? 'text-danger' : ''}">Senha</label>
-                        <input type="password" class="form-control ${not empty error ? 'border-danger' : ''}" id="password" name="password" placeholder="insira a senha">
+                        <label for="password" class="form-label">Senha</label>
+                        <input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" id="password" name="password" placeholder="insira a senha">
                     </div>
                      <c:if test="${not empty error}">
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
@@ -45,6 +45,7 @@
                     </c:if>
                     <button type="submit" class="btn btn-primary">Logar</button>
                 </form>
+                <b>Não possui uma conta? <a href="./signup">Criar conta</a></b>
             </div>
         </main>
     </body>

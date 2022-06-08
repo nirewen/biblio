@@ -13,12 +13,12 @@
                 <h1>Criar uma conta</h1>
                 <form method="post" action="./signup">
                     <div class="mb-3">
-                        <label for="email" class="form-label ${not empty error ? 'text-danger' : ''}">Email</label>
-                        <input type="email" class="form-control ${not empty error ? 'border-danger' : ''}" id="email" name="email" placeholder="insira o email" value="${email}">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" id="email" name="email" placeholder="insira o email" value="${email}">
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label ${not empty error ? 'text-danger' : ''}">Senha</label>
-                        <input type="password" class="form-control ${not empty error ? 'border-danger' : ''}" id="password" name="password" placeholder="insira a senha">
+                        <label for="password" class="form-label">Senha</label>
+                        <input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" id="password" name="password" placeholder="insira a senha">
                     </div>
                      <c:if test="${not empty error}">
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
@@ -33,8 +33,9 @@
                             </div>
                         </div>
                     </c:if>
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    <button type="submit" class="btn btn-primary">Criar conta</button>
                 </form>
+                <b>Já possui uma conta? <a href="./login">Fazer login</a></b>
             </div>
         </main>
     </body>
