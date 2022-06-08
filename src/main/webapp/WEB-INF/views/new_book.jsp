@@ -11,7 +11,7 @@
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex gap-5 justify-content-center">
                 <div class="w-25">
-                    <img src="/biblio/image/default_cover.png" class="rounded w-100" id="cover_img">
+                    <img src="/biblio/image/covers/default.png" class="rounded w-100" id="cover_img">
                 </div>
                 <div class="d-flex flex-column flex-fill">
                     <c:if test="${not empty error}">

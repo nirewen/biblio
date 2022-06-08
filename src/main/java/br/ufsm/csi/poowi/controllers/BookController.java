@@ -137,7 +137,7 @@ public class BookController extends HttpServlet {
         int year = Integer.parseInt(
                 StringUtils.defaultIfEmpty(req.getParameter("year"),
                         Integer.toString(Calendar.getInstance().get(Calendar.YEAR))));
-        String cover = null;
+        String cover = "/biblio/image/covers/default.png";
         Part coverFile = req.getPart("cover");
 
         String fileName = coverFile.getSubmittedFileName();
@@ -163,7 +163,6 @@ public class BookController extends HttpServlet {
         }
 
         if (option.equals("new")) {
-
             Book book = new Book();
 
             book.setName(name);

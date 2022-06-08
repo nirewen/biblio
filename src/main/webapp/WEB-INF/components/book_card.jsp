@@ -3,7 +3,7 @@
 <%@ page isELIgnored="false" %>
 <a href="/biblio/book?id=${book.getId()}" class="text-decoration-none text-body">
   <div class="card" style="max-width: 540px;">
-    <img src="${not empty book.getCover() ? book.getCover() : "/biblio/image/default_cover.png"}" class="card-img-top" alt="Capa de ${book.getName()}">
+    <img src="${book.getCover()}" class="card-img-top" alt="Capa de ${book.getName()}">
     <div class="card-body">
       <h5 class="card-title">${book.getName()}</h5>
       <p class="card-text">${book.getAuthor()}</p>
