@@ -9,7 +9,7 @@
     <body>
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
-            <div class="d-flex flex-column w-80">
+            <div class="d-flex flex-column w-100 px-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <h1>Livros</h1>
                     <c:if test="${user.getPermission() == 8}">

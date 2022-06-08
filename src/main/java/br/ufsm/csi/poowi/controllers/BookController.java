@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import br.ufsm.csi.poowi.dao.BookDAO;
 import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.util.BookException;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
@@ -103,6 +104,8 @@ public class BookController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user");
 
@@ -132,42 +135,51 @@ public class BookController extends HttpServlet {
         int year = Integer.parseInt(
                 StringUtils.defaultIfEmpty(req.getParameter("year"),
                         Integer.toString(Calendar.getInstance().get(Calendar.YEAR))));
+        String cover = null;
         Part coverFile = req.getPart("cover");
-
-        InputStream coverIS = coverFile.getInputStream();
-        byte[] imageBytes = new byte[(int) coverFile.getSize()];
-        coverIS.read(imageBytes, 0, imageBytes.length);
-        coverIS.close();
 
         String fileName = coverFile.getSubmittedFileName();
         String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
 
-        if (!VALID_EXTENSIONS.contains(ext)) {
-            req.setAttribute("error", "Tipo de arquivo para capa inválido!");
-        } else {
-            String cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
+        if (!fileName.isEmpty()) {
+            if (!VALID_EXTENSIONS.contains(ext)) {
+                session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
+                        "Tipo de arquivo para capa inválido!"));
 
-            if (option.equals("new")) {
-                Book book = new Book();
+                resp.sendRedirect(req.getContextPath() + "/book?option=" + option);
 
-                book.setName(name);
-                book.setSynopsis(synopsis);
-                book.setPages(pages);
-                book.setChapters(chapters);
-                book.setAuthor(author);
-                book.setPublisher(publisher);
-                book.setYear(year);
-                book.setCover(cover);
+                return;
+            } else {
+                InputStream coverIS = coverFile.getInputStream();
+                byte[] imageBytes = new byte[(int) coverFile.getSize()];
 
-                boolean success = dao.createBook(book);
+                coverIS.read(imageBytes, 0, imageBytes.length);
+                coverIS.close();
 
-                if (success) {
-                    req.setAttribute("message", "Livro criado com sucesso!");
+                cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
+            }
+        }
 
-                    resp.sendRedirect(req.getContextPath() + "/books");
+        if (option.equals("new")) {
+            Book book = new Book();
 
-                    return;
-                }
+            book.setName(name);
+            book.setSynopsis(synopsis);
+            book.setPages(pages);
+            book.setChapters(chapters);
+            book.setAuthor(author);
+            book.setPublisher(publisher);
+            book.setYear(year);
+            book.setCover(cover);
+
+            boolean success = dao.createBook(book);
+
+            if (success) {
+                session.setAttribute("message", "Livro criado com sucesso!");
+
+                resp.sendRedirect(req.getContextPath() + "/books");
+
+                return;
             }
         }
 
