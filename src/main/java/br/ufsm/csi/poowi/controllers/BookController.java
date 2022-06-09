@@ -78,6 +78,15 @@ public class BookController extends HttpServlet {
 
                     return;
                 }
+
+                Book book = dao.getBook(Integer.parseInt(id));
+
+                if (book == null) {
+                    // TODO: Redirect to 404
+                    return;
+                }
+
+                req.setAttribute("book", book);
             }
 
             if (option.equals("new"))
@@ -155,31 +164,43 @@ public class BookController extends HttpServlet {
                 String serverPath = "/workspaces/biblio/target";
                 cover = "/biblio/image/covers/" + id + "." + ext;
 
-                Files.createDirectories(Paths.get(serverPath + "/biblio/image/covers/"));
-                Files.createFile(Paths.get(serverPath + cover));
+                if (option.equals("new"))
+                    Files.createFile(Paths.get(serverPath + cover));
 
                 coverFile.write(serverPath + cover);
             }
         }
 
+        Book book = new Book();
+
+        book.setName(name);
+        book.setSynopsis(synopsis);
+        book.setPages(pages);
+        book.setChapters(chapters);
+        book.setAuthor(author);
+        book.setPublisher(publisher);
+        book.setYear(year);
+        book.setCover(cover);
+
         if (option.equals("new")) {
-            Book book = new Book();
-
-            book.setName(name);
-            book.setSynopsis(synopsis);
-            book.setPages(pages);
-            book.setChapters(chapters);
-            book.setAuthor(author);
-            book.setPublisher(publisher);
-            book.setYear(year);
-            book.setCover(cover);
-
             boolean success = dao.createBook(book);
 
             if (success) {
                 session.setAttribute("message", "Livro criado com sucesso!");
 
                 resp.sendRedirect(req.getContextPath() + "/books");
+
+                return;
+            }
+        }
+
+        if (option.equals("edit")) {
+            boolean success = dao.updateBook(id, book);
+
+            if (success) {
+                session.setAttribute("message", "Livro atualizado com sucesso!");
+
+                resp.sendRedirect(req.getContextPath() + "/book?id=" + id);
 
                 return;
             }

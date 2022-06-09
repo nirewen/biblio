@@ -95,9 +95,9 @@ public class BookDAO {
         return false;
     }
 
-    public boolean updateBook(Book newBook) {
+    public boolean updateBook(int id, Book newBook) {
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "UPDATE books SET name = ?, synopsis = ?, pages = ?, chapters = ?, author = ?, publisher = ?, year = ?";
+            String sql = "UPDATE books SET name = ?, synopsis = ?, pages = ?, chapters = ?, author = ?, publisher = ?, year = ? WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setString(1, newBook.getName());
@@ -107,6 +107,7 @@ public class BookDAO {
             preparedStatement.setString(5, newBook.getAuthor());
             preparedStatement.setString(6, newBook.getPublisher());
             preparedStatement.setInt(7, newBook.getYear());
+            preparedStatement.setInt(8, id);
 
             preparedStatement.execute();
 

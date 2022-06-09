@@ -13,10 +13,15 @@
         <main class="container d-flex flex-column mt-5">
             <div class="d-flex gap-5">
                 <div class="w-25">
-                    <img src="${book.getCover()}" class="rounded" alt="Capa de ${book.getName()}">
+                    <img src="${book.getCover()}" class="rounded w-100" alt="Capa de ${book.getName()}">
                 </div>
-                <div class="d-flex flex-column">
-                    <h1>${book.getName()} <small>(${book.getYear()})</small></h1>
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1>${book.getName()} <small>(${book.getYear()})</small></h1>
+                        <c:if test="${user.getPermission() == 8}">
+                        <a href="/biblio/book?id=${book.getId()}&option=edit" class="btn btn-primary">Editar</a>
+                        </c:if>
+                    </div>
                     <span><em>${book.getAuthor()}</em></span>
                     <p class="bg-light rounded mt-2 p-2">${book.getSynopsis()}</p>
                     <span><b>${book.getPages()}</b> páginas</span>
