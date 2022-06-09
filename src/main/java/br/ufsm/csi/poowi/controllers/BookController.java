@@ -3,7 +3,6 @@ package br.ufsm.csi.poowi.controllers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -149,16 +148,22 @@ public class BookController extends HttpServlet {
         }
 
         int id = NumberUtils.toInt(req.getParameter("id"), dao.nextId());
+
+        Book book = dao.getBook(id);
+
+        if (book == null)
+            book = new Book();
+
         String name = req.getParameter("name");
-        String synopsis = req.getParameter("synopsis");
-        int pages = Integer.parseInt(StringUtils.defaultIfEmpty(req.getParameter("pages"), "0"));
-        float chapters = Float.parseFloat(StringUtils.defaultIfEmpty(req.getParameter("chapters"), "0"));
-        String author = req.getParameter("author");
-        String publisher = req.getParameter("publisher");
-        int year = Integer.parseInt(
-                StringUtils.defaultIfEmpty(req.getParameter("year"),
-                        Integer.toString(Calendar.getInstance().get(Calendar.YEAR))));
-        String cover = "/biblio/image/covers/default.png";
+        String synopsis = StringUtils.defaultIfEmpty(req.getParameter("synopsis"), book.getSynopsis());
+        int pages = NumberUtils.toInt(req.getParameter("pages"), book.getPages());
+        float chapters = NumberUtils.toFloat(req.getParameter("chapters"), book.getChapters());
+        String author = StringUtils.defaultIfEmpty(req.getParameter("author"), book.getAuthor());
+        String publisher = StringUtils.defaultIfEmpty(req.getParameter("publisher"), book.getPublisher());
+        int year = NumberUtils.toInt(req.getParameter("year"), 2022);
+        String cover = StringUtils.defaultIfEmpty(req.getParameter("cover"),
+                StringUtils.defaultIfEmpty(book.getCover(), "/biblio/image/covers/default.png"));
+
         Part coverFile = req.getPart("cover");
 
         String fileName = coverFile.getSubmittedFileName();
@@ -189,8 +194,6 @@ public class BookController extends HttpServlet {
                 cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
             }
         }
-
-        Book book = new Book();
 
         book.setName(name);
         book.setSynopsis(synopsis);
