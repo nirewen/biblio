@@ -1,8 +1,7 @@
 package br.ufsm.csi.poowi.controllers;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -157,17 +157,24 @@ public class BookController extends HttpServlet {
                 session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
                         "Tipo de arquivo para capa inválido!"));
 
-                resp.sendRedirect(req.getContextPath() + "/book?option=" + option);
+                String redirectTo = "/book?";
+
+                if (req.getParameter("id") != null)
+                    redirectTo += "id=" + id + "&";
+
+                redirectTo += "option=" + option;
+
+                resp.sendRedirect(req.getContextPath() + redirectTo);
 
                 return;
             } else {
-                String serverPath = "/workspaces/biblio/target";
-                cover = "/biblio/image/covers/" + id + "." + ext;
+                InputStream coverIS = coverFile.getInputStream();
+                byte[] imageBytes = new byte[(int) coverFile.getSize()];
 
-                if (option.equals("new"))
-                    Files.createFile(Paths.get(serverPath + cover));
+                coverIS.read(imageBytes, 0, imageBytes.length);
+                coverIS.close();
 
-                coverFile.write(serverPath + cover);
+                cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
             }
         }
 
