@@ -91,6 +91,18 @@ public class BookController extends HttpServlet {
 
             if (option.equals("new"))
                 route = "/WEB-INF/views/new_book.jsp";
+
+            if (option.equals("delete")) {
+                boolean success = dao.deleteBook(Integer.parseInt(id));
+
+                if (success) {
+                    session.setAttribute("message", "Livro excluido com sucesso!");
+
+                    resp.sendRedirect(req.getContextPath() + "/books");
+
+                    return;
+                }
+            }
         } else if (id == null || id.isEmpty()) {
             // redirectionar para a lista caso id ausente
             resp.sendRedirect(req.getContextPath() + "/books");

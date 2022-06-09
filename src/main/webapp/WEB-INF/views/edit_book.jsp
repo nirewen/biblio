@@ -61,7 +61,10 @@
                             <label for="year">Ano</label>
                             <input type="number" class="form-control" name="year" id="year" value="${book.getYear()}" />
                         </div>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <a class="btn btn-danger" href="./book?id=${book.getId()}&option=delete" onclick="return confirm('Tem certeza que quer excluir esse livro?')">Excluir livro</a>
+                        </div>
                     </form>
                 </div>
             </div>

@@ -120,6 +120,23 @@ public class BookDAO {
         return false;
     }
 
+    public boolean deleteBook(int id) {
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "DELETE FROM books WHERE id = ?";
+
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.execute();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public List<Book> getBookList() {
         ArrayList<Book> books = new ArrayList<>();
 
