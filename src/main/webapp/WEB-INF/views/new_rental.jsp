@@ -6,7 +6,7 @@
 <html>
     <head>
         <jsp:include page="../shared/head.jsp" />
-        <title>Livro ${book.getId()}</title>
+        <title>Alugar livro ${book.getId()}</title>
     </head>
     <body>
         <jsp:include page="../components/navbar.jsp" />
@@ -33,13 +33,14 @@
                         </c:if>
                     </div>
                     <span><em>${book.getAuthor()}</em></span>
-                    <p class="bg-light rounded mt-2 p-2">${book.getSynopsis()}</p>
-                    <span><b>${book.getPages()}</b> páginas</span>
-                    <span><b><fmt:formatNumber value="${book.getChapters()}" minFractionDigits="0" maxFractionDigits="1"/></b> capítulos</span>
-                    <small>${book.getPublisher()}</small>
-                    <c:if test="${not empty user}">
-                    <a class="btn btn-primary ms-auto mt-auto align-self-end" href="./rent?id=${book.getId()}">Alugar livro</a>
-                    </c:if>
+                    <form class="mt-auto" method="post" action="./rent">
+                        <input type="hidden" name="id" value="${book.getId()}">
+                        <div class="mb-3">
+                            <label for="devolution">Data de devolução</label>
+                            <input type="date" class="form-control" name="devolution" id="devolution" max="${max_date}" min="${min_date}" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Alugar</button>
+                    </form>
                 </div>
             </div>
         </main>
