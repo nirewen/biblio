@@ -61,7 +61,10 @@ public class RentDAO {
 
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            // doc: https://www.postgresql.org/docs/14/errcodes-appendix.html
+            if (!e.getSQLState().equals("23505")) {
+                e.printStackTrace();
+            }
         }
 
         return false;
