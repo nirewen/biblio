@@ -5,7 +5,7 @@ import java.sql.Date;
 public class Rent {
     private int id;
     private int user;
-    private int book;
+    private Book book;
     private Date date;
     private Date devolutionDate;
     private boolean active;
@@ -18,7 +18,7 @@ public class Rent {
         return this.user;
     }
 
-    public int getBook() {
+    public Book getBook() {
         return this.book;
     }
 
@@ -42,7 +42,7 @@ public class Rent {
         this.user = value;
     }
 
-    public void setBook(int value) {
+    public void setBook(Book value) {
         this.book = value;
     }
 

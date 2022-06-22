@@ -16,6 +16,7 @@ import br.ufsm.csi.poowi.dao.RentDAO;
 import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.model.Rent;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.util.RentalException;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
@@ -30,6 +31,8 @@ public class RentController extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         String id = req.getParameter("id");
+        String postpone = req.getParameter("postpone");
+        String returnBook = req.getParameter("return");
 
         if (id == null || id.isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/books");
@@ -37,15 +40,46 @@ public class RentController extends HttpServlet {
         }
 
         if (user == null) {
+            String redirectTo = "/rent?id=" + id;
+
+            if (postpone != null)
+                redirectTo += "&postpone";
+
+            session.setAttribute("redirectTo", redirectTo);
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/rent?id=" + id);
 
             resp.sendRedirect(req.getContextPath() + "/login");
 
             return;
         }
 
+        String route = "/WEB-INF/views/new_rental.jsp";
+
         Book book = dao.getBook(Integer.parseInt(id));
+
+        if (postpone != null) {
+            route = "/WEB-INF/views/edit_rental.jsp";
+
+            Rent rent = rentDao.getRent(Integer.parseInt(id));
+
+            if (rent == null) {
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
+
+                return;
+            }
+
+            book = rent.getBook();
+
+            req.setAttribute("rent", rent);
+        }
+
+        if (returnBook != null) {
+            rentDao.deleteRent(Integer.parseInt(id));
+
+            resp.sendRedirect(req.getContextPath() + "/dashboard");
+
+            return;
+        }
 
         if (book == null) {
             // TODO: Redirect to 404
@@ -56,7 +90,7 @@ public class RentController extends HttpServlet {
 
         req.setAttribute("book", book);
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/new_rental.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher(route);
 
         rd.forward(req, resp);
     }
@@ -67,10 +101,17 @@ public class RentController extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         String id = req.getParameter("id");
+        String rentId = req.getParameter("rent_id");
+        String edit = req.getParameter("edit");
 
         if (user == null) {
+            String redirectTo = "/rent?id=" + id;
+
+            if (edit != null)
+                redirectTo += "&edit";
+
+            session.setAttribute("redirectTo", redirectTo);
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/rent?id=" + id);
 
             resp.sendRedirect(req.getContextPath() + "/login");
 
@@ -86,23 +127,47 @@ public class RentController extends HttpServlet {
             return;
         }
 
-        Rent rent = new Rent();
+        Rent rent = null;
 
-        rent.setUser(user.getId());
-        rent.setBook(book.getId());
-        rent.setDate(new Date(new java.util.Date().getTime()));
+        if (rentId != null)
+            rent = rentDao.getRent(Integer.parseInt(rentId));
+
+        if (rent == null) {
+            rent = new Rent();
+
+            rent.setUser(user.getId());
+            rent.setBook(book);
+            rent.setDate(new Date(new java.util.Date().getTime()));
+        }
+
         rent.setDevolutionDate(Date.valueOf(req.getParameter("devolution")));
 
-        boolean success = rentDao.createRent(rent);
+        if (edit != null) {
+            boolean success = rentDao.editRent(rent);
 
-        if (success) {
-            resp.sendRedirect(req.getContextPath() + "/dashboard");
+            if (success) {
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
 
-            return;
+                return;
+            }
+        } else {
+            boolean success = rentDao.createRent(rent);
+
+            if (success) {
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
+
+                return;
+            } else {
+                session.setAttribute("error",
+                        new RentalException(RentalException.Type.BOOK_ALREADY_RENTED, "Livro já alugado!"));
+            }
         }
+
+        req.setAttribute("book", book);
 
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/new_rental.jsp");
 
         rd.forward(req, resp);
+        session.removeAttribute("error");
     }
 }

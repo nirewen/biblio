@@ -9,8 +9,12 @@
     <body>
         <jsp:include page="../components/navbar.jsp" />
         <main class="container">
-            <h1>Hello World!</h1>
-            <span>${user.getName()}</span>
+            <h1>Dashboard</h1>
+            <p>Aqui estão seus livros alugados</p>
+            <c:forEach items="${rentals}" var="rent">
+                <c:set var="rent" value="${rent}" scope="request" />
+                <jsp:include page="../components/rental_card.jsp" />
+            </c:forEach>
         </main>
     </body>
 </html>

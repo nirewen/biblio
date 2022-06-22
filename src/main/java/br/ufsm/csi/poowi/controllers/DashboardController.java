@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import br.ufsm.csi.poowi.dao.RentDAO;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
 @WebServlet("/dashboard")
 public class DashboardController extends HttpServlet {
+    private final RentDAO rentDAO = new RentDAO();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
@@ -30,6 +33,8 @@ public class DashboardController extends HttpServlet {
 
             return;
         }
+
+        req.setAttribute("rentals", rentDAO.getRentals(user.getId()));
 
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/dashboard.jsp");
 

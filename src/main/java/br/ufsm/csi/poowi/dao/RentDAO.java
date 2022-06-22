@@ -11,12 +11,14 @@ import br.ufsm.csi.poowi.model.Rent;
 import br.ufsm.csi.poowi.util.DBConnect;
 
 public class RentDAO {
+    private final BookDAO bookDAO = new BookDAO();
+
     public Rent fromResultSet(ResultSet resultSet) throws SQLException {
         Rent rent = new Rent();
 
         rent.setId(resultSet.getInt("id"));
         rent.setUser(resultSet.getInt("user_id"));
-        rent.setBook(resultSet.getInt("book_id"));
+        rent.setBook(bookDAO.getBook(resultSet.getInt("book_id")));
         rent.setDate(resultSet.getDate("date"));
         rent.setDevolutionDate(resultSet.getDate("devolution_date"));
         rent.setActive(resultSet.getBoolean("active"));
@@ -51,9 +53,44 @@ public class RentDAO {
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, rent.getUser());
-            preparedStatement.setInt(2, rent.getBook());
+            preparedStatement.setInt(2, rent.getBook().getId());
             preparedStatement.setDate(3, rent.getDate());
             preparedStatement.setDate(4, rent.getDevolutionDate());
+
+            preparedStatement.execute();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean editRent(Rent rent) {
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "UPDATE rentals SET devolution_date = ? WHERE id = ?";
+
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setDate(1, rent.getDate());
+            preparedStatement.setInt(2, rent.getId());
+
+            preparedStatement.execute();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteRent(int id) {
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "DELETE FROM rentals WHERE id = ?";
+
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
 
             preparedStatement.execute();
 
@@ -69,7 +106,7 @@ public class RentDAO {
         List<Rent> rentals = new ArrayList<>();
 
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "SELECT * FROM rentals WHERE user_id = ?";
+            String sql = "SELECT * FROM rentals LEFT JOIN books ON rentals.book_id = books.id WHERE user_id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, user);
