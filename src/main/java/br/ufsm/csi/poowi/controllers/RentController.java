@@ -40,10 +40,12 @@ public class RentController extends HttpServlet {
         }
 
         if (user == null) {
-            String redirectTo = "/rent?id=" + id;
+            String redirectTo = "/rent?";
 
             if (postpone != null)
-                redirectTo += "&postpone";
+                redirectTo += "postpone";
+
+            redirectTo += "&" + id;
 
             session.setAttribute("redirectTo", redirectTo);
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
@@ -106,10 +108,12 @@ public class RentController extends HttpServlet {
         String devolution = req.getParameter("devolution");
 
         if (user == null) {
-            String redirectTo = "/rent?id=" + id;
+            String redirectTo = "/rent?";
 
             if (edit != null)
-                redirectTo += "&edit";
+                redirectTo += "edit";
+
+            redirectTo += "&" + id;
 
             session.setAttribute("redirectTo", redirectTo);
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
