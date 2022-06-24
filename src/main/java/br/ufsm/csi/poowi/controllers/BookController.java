@@ -19,7 +19,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import br.ufsm.csi.poowi.dao.BookDAO;
+import br.ufsm.csi.poowi.dao.RentDAO;
 import br.ufsm.csi.poowi.model.Book;
+import br.ufsm.csi.poowi.model.Rent;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.util.BookException;
 import br.ufsm.csi.poowi.util.UserException;
@@ -31,7 +33,8 @@ import br.ufsm.csi.poowi.util.UserException.Type;
         maxRequestSize = 1024 * 1024 * 100 // 100 MB
 )
 public class BookController extends HttpServlet {
-    private final BookDAO dao = new BookDAO();
+    private final BookDAO bookDao = new BookDAO();
+    private final RentDAO rentDao = new RentDAO();
     private final ArrayList<String> VALID_EXTENSIONS = new ArrayList<String>() {
         {
             add("jpg");
@@ -43,15 +46,15 @@ public class BookController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+
         String option = req.getParameter("option");
         String id = req.getParameter("id");
 
         String route = "/WEB-INF/views/book.jsp";
 
         if (option != null && !option.isEmpty()) {
-            HttpSession session = req.getSession();
-            User user = (User) session.getAttribute("user");
-
             if (user == null) {
                 session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
@@ -87,7 +90,7 @@ public class BookController extends HttpServlet {
                     return;
                 }
 
-                Book book = dao.getBook(Integer.parseInt(id));
+                Book book = bookDao.getBook(Integer.parseInt(id));
 
                 if (book == null) {
                     // TODO: Redirect to 404
@@ -101,7 +104,7 @@ public class BookController extends HttpServlet {
                 route = "/WEB-INF/views/new_book.jsp";
 
             if (option.equals("delete")) {
-                boolean success = dao.deleteBook(Integer.parseInt(id));
+                boolean success = bookDao.deleteBook(Integer.parseInt(id));
 
                 if (success) {
                     session.setAttribute("message", "Livro excluido com sucesso!");
@@ -117,12 +120,17 @@ public class BookController extends HttpServlet {
 
             return;
         } else {
-            Book book = dao.getBook(Integer.parseInt(id));
+            Book book = bookDao.getBook(Integer.parseInt(id));
 
             if (book == null) {
                 resp.sendRedirect(req.getContextPath() + "/books");
                 return;
             }
+
+            Rent rent = rentDao.getRent(user, book);
+
+            if (rent != null)
+                req.setAttribute("rent", rent);
 
             req.setAttribute("book", book);
         }
@@ -156,9 +164,9 @@ public class BookController extends HttpServlet {
             return;
         }
 
-        int id = NumberUtils.toInt(req.getParameter("id"), dao.nextId());
+        int id = NumberUtils.toInt(req.getParameter("id"), bookDao.nextId());
 
-        Book book = dao.getBook(id);
+        Book book = bookDao.getBook(id);
 
         if (book == null)
             book = new Book();
@@ -214,7 +222,7 @@ public class BookController extends HttpServlet {
         book.setCover(cover);
 
         if (option.equals("new")) {
-            boolean success = dao.createBook(book);
+            boolean success = bookDao.createBook(book);
 
             if (success) {
                 session.setAttribute("message", "Livro criado com sucesso!");
@@ -226,7 +234,7 @@ public class BookController extends HttpServlet {
         }
 
         if (option.equals("edit")) {
-            boolean success = dao.updateBook(id, book);
+            boolean success = bookDao.updateBook(id, book);
 
             if (success) {
                 session.setAttribute("message", "Livro atualizado com sucesso!");

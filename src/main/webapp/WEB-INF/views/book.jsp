@@ -38,7 +38,16 @@
                     <span><b><fmt:formatNumber value="${book.getChapters()}" minFractionDigits="0" maxFractionDigits="1"/></b> capítulos</span>
                     <small>${book.getPublisher()}</small>
                     <c:if test="${not empty user}">
-                    <a class="btn btn-primary ms-auto mt-auto align-self-end" href="./rent?id=${book.getId()}">Alugar livro</a>
+                    <div class="d-flex justify-content-end mt-auto">
+                        <c:choose>
+                            <c:when test="${not empty rent}">
+                                <a class="btn btn-primary" href="./rent?postpone&id=${rent.getId()}">Prorrogar</a>
+                            </c:when>
+                            <c:otherwise>
+                                <a class="btn btn-primary" href="./rent?id=${book.getId()}">Alugar livro</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
                     </c:if>
                 </div>
             </div>

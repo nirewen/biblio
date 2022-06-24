@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.model.Rent;
+import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.util.DBConnect;
 
 public class RentDAO {
@@ -22,6 +24,31 @@ public class RentDAO {
         rent.setDate(resultSet.getDate("date"));
         rent.setDevolutionDate(resultSet.getDate("devolution_date"));
         rent.setActive(resultSet.getBoolean("active"));
+
+        return rent;
+    }
+
+    public Rent getRent(User user, Book book) {
+        Rent rent = null;
+
+        if (user == null)
+            return null;
+
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "SELECT * FROM rentals WHERE book_id = ? AND user_id = ?";
+
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, book.getId());
+            preparedStatement.setInt(2, user.getId());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                rent = this.fromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return rent;
     }
