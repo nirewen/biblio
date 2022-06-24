@@ -8,7 +8,8 @@
     </head>
     <body>
         <jsp:include page="../components/navbar.jsp" />
-        <main class="container d-flex flex-column align-items-center mt-5">
+        <main class="container d-flex flex-column mt-5">
+            <h1>Adicionar novo livro</h1>
             <div class="d-flex gap-5 justify-content-center">
                 <div class="w-25">
                     <img src="/biblio/image/covers/default.png" class="rounded w-100" id="cover_img">
