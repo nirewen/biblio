@@ -8,7 +8,7 @@
     </head>
     <body>
         <jsp:include page="../components/navbar.jsp" />
-        <main class="container">
+        <main class="container mt-5">
             <h1>Dashboard</h1>
             <c:choose>
                 <c:when test="${not empty rentals}">
