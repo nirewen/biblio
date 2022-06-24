@@ -28,13 +28,13 @@
                 <li class="nav-item">
                     <a class="${currentPage == '/biblio/books' ? 'active' : ''} btn" href="/biblio/books">Livros</a>
                 </li>
-                <div class="ms-lg-auto d-flex gap-2">
-                <c:forEach items="${pages}" var="page">
-                    <li class="nav-item">
-                        <a class="${currentPage == page[0] ? 'active' : ''} ${page[2]}" href="${page[0]}">${page[1]}</a>
-                    </li>
-                </c:forEach>
-                </div>
+            </ul>
+            <ul class="navbar-nav d-flex gap-2 mb-2 mb-lg-0 ms-lg-auto">
+            <c:forEach items="${pages}" var="page">
+                <li class="nav-item">
+                    <a class="${currentPage == page[0] ? 'active' : ''} ${page[2]}" href="${page[0]}">${page[1]}</a>
+                </li>
+            </c:forEach>
             </ul>
         </div>
     </div>
