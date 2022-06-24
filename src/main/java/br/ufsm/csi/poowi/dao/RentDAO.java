@@ -75,7 +75,7 @@ public class RentDAO {
             String sql = "UPDATE rentals SET devolution_date = ? WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setDate(1, rent.getDate());
+            preparedStatement.setDate(1, rent.getDevolutionDate());
             preparedStatement.setInt(2, rent.getId());
 
             preparedStatement.execute();

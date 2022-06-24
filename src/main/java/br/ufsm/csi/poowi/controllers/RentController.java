@@ -103,6 +103,7 @@ public class RentController extends HttpServlet {
         String id = req.getParameter("id");
         String rentId = req.getParameter("rent_id");
         String edit = req.getParameter("edit");
+        String devolution = req.getParameter("devolution");
 
         if (user == null) {
             String redirectTo = "/rent?id=" + id;
@@ -140,7 +141,7 @@ public class RentController extends HttpServlet {
             rent.setDate(new Date(new java.util.Date().getTime()));
         }
 
-        rent.setDevolutionDate(Date.valueOf(req.getParameter("devolution")));
+        rent.setDevolutionDate(Date.valueOf(devolution));
 
         if (edit != null) {
             boolean success = rentDao.editRent(rent);
