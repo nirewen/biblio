@@ -4,6 +4,7 @@ public class UserException extends Throwable {
     public static enum Type {
         DUPLICATE_USER,
         INCORRECT_CREDENTIALS,
+        INSUFFICIENT_PERMISSIONS,
         LOGGED_OUT
     }
 

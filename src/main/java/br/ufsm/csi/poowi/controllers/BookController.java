@@ -68,6 +68,15 @@ public class BookController extends HttpServlet {
                 return;
             }
 
+            if (user.getPermission() != 8) {
+                session.setAttribute("error",
+                        new UserException(Type.INSUFFICIENT_PERMISSIONS, "Permissões insuficientes"));
+
+                resp.sendRedirect(req.getContextPath() + "/book");
+
+                return;
+            }
+
             if (option.equals("edit")) {
                 route = "/WEB-INF/views/edit_book.jsp";
 
