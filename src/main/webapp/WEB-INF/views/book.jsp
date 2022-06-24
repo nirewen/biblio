@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false" %>
 
-<html>
+<html lang="pt-br">
     <head>
         <jsp:include page="../shared/head.jsp" />
         <title>Livro ${book.getId()}</title>
