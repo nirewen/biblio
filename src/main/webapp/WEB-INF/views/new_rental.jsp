@@ -33,6 +33,7 @@
                         </c:if>
                     </div>
                     <span><em>${book.getAuthor()}</em></span>
+                    <p class="bg-light rounded mt-2 p-2">${book.getSynopsis()}</p>
                     <form class="mt-auto" method="post" action="./rent">
                         <input type="hidden" name="id" value="${book.getId()}">
                         <div class="mb-3">
