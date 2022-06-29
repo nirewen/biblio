@@ -136,7 +136,7 @@ public class LoanDAO {
         List<Loan> loans = new ArrayList<>();
 
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "SELECT * FROM loans LEFT JOIN books ON loans.book_id = books.id WHERE user_id = ?";
+            String sql = "SELECT * FROM loans LEFT JOIN books ON loans.book_id = books.id WHERE user_id = ? ORDER BY loans.id ASC;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, user);

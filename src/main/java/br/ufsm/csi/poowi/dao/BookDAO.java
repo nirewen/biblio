@@ -141,7 +141,7 @@ public class BookDAO {
         ArrayList<Book> books = new ArrayList<>();
 
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "SELECT * FROM books;";
+            String sql = "SELECT * FROM books ORDER BY id ASC;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
 
