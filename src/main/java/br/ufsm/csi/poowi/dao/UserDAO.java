@@ -1,7 +1,6 @@
 package br.ufsm.csi.poowi.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,7 +74,7 @@ public class UserDAO {
             preparedStatement.setString(1, newUser.getEmail());
             preparedStatement.setString(2, newUser.getPassword());
             preparedStatement.setString(3, newUser.getName());
-            preparedStatement.setDate(4, Date.valueOf(newUser.getDateOfBirth().toString()));
+            preparedStatement.setDate(4, newUser.getDateOfBirth());
             preparedStatement.setInt(5, newUser.getId());
 
             preparedStatement.execute();

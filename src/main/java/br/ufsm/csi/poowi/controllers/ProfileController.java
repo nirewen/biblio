@@ -45,6 +45,8 @@ public class ProfileController extends HttpServlet {
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
 
         rd.forward(req, resp);
+
+        session.removeAttribute("message");
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ProfileController extends HttpServlet {
         String name = StringUtils.defaultIfEmpty(req.getParameter("name"), user.getName());
         Date dateOfBirth = user.getDateOfBirth();
 
-        if (req.getParameter("date_of_birth") != null) {
+        if (req.getParameter("date_of_birth") != null && !req.getParameter("date_of_birth").isEmpty()) {
             String dateOfBirthStr = req.getParameter("date_of_birth");
 
             dateOfBirth = Date.valueOf(dateOfBirthStr);
@@ -93,13 +95,17 @@ public class ProfileController extends HttpServlet {
         try {
             dao.updateUser(user);
 
-            req.setAttribute("message", "Usuário atualizado");
-            req.setAttribute("user", user);
+            session.setAttribute("user", user);
+            session.setAttribute("message", "Usuário atualizado");
+
+            resp.sendRedirect(req.getContextPath() + "/profile");
         } catch (UserException e) {
             req.setAttribute("error", e);
         }
 
         RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
+
+        req.setAttribute("edit", true);
 
         rd.forward(req, resp);
     }
