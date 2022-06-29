@@ -61,7 +61,10 @@
                             <label for="year">Ano</label>
                             <input type="number" class="form-control" name="year" id="year" />
                         </div>
-                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Adicionar</button>
+                            <a href="./books" class="btn btn-light">Voltar</a>
+                        </div>
                     </form>
                 </div>
             </div>
