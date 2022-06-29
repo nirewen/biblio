@@ -30,7 +30,7 @@ public class Loan {
         return this.devolutionDate;
     }
 
-    public boolean getActive() {
+    public boolean isActive() {
         return this.active;
     }
 

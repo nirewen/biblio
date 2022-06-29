@@ -20,8 +20,15 @@
     </div>
     <div class="col">
       <div class="card-body h-100 d-flex flex-column justify-content-between">
-        <a class="btn btn-primary" href="/biblio/loan?postpone&id=${loan.getId()}" role="button">Prorrogar</a>
-        <a class="btn btn-light" href="/biblio/loan?return&id=${loan.getId()}" role="button" onclick="return confirm('Deseja devolver ${loan.getBook().getName()}?')">Devolver</a>
+      <c:choose>
+        <c:when test="${loan.isActive()}">
+          <a class="btn btn-primary" href="/biblio/loan?postpone&id=${loan.getId()}" role="button">Prorrogar</a>
+          <a class="btn btn-light" href="/biblio/loan?return&id=${loan.getId()}" role="button" onclick="return confirm('Deseja devolver ${loan.getBook().getName()}?')">Devolver</a>
+        </c:when>
+        <c:otherwise>
+          <a class="btn btn-success disabled" href="#" role="button">Entregue</a>
+        </c:otherwise>
+      </c:choose>
       </div>
     </div>
   </div>
