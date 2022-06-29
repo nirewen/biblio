@@ -12,18 +12,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import br.ufsm.csi.poowi.dao.BookDAO;
-import br.ufsm.csi.poowi.dao.RentDAO;
+import br.ufsm.csi.poowi.dao.LoanDAO;
 import br.ufsm.csi.poowi.model.Book;
-import br.ufsm.csi.poowi.model.Rent;
+import br.ufsm.csi.poowi.model.Loan;
 import br.ufsm.csi.poowi.model.User;
-import br.ufsm.csi.poowi.util.RentalException;
+import br.ufsm.csi.poowi.util.LoanException;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
-@WebServlet("/rent")
-public class RentController extends HttpServlet {
-    private static final BookDAO dao = new BookDAO();
-    private static final RentDAO rentDao = new RentDAO();
+@WebServlet("/loan")
+public class LoanController extends HttpServlet {
+    private static final BookDAO bookDAO = new BookDAO();
+    private static final LoanDAO loanDAO = new LoanDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -40,7 +40,7 @@ public class RentController extends HttpServlet {
         }
 
         if (user == null) {
-            String redirectTo = "/rent?";
+            String redirectTo = "/loan?";
 
             if (postpone != null)
                 redirectTo += "postpone";
@@ -55,28 +55,28 @@ public class RentController extends HttpServlet {
             return;
         }
 
-        String route = "/WEB-INF/views/new_rental.jsp";
+        String route = "/WEB-INF/views/new_loan.jsp";
 
-        Book book = dao.getBook(Integer.parseInt(id));
+        Book book = bookDAO.getBook(Integer.parseInt(id));
 
         if (postpone != null) {
-            route = "/WEB-INF/views/edit_rental.jsp";
+            route = "/WEB-INF/views/edit_loan.jsp";
 
-            Rent rent = rentDao.getRent(Integer.parseInt(id));
+            Loan loan = loanDAO.getLoan(Integer.parseInt(id));
 
-            if (rent == null) {
+            if (loan == null) {
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
 
                 return;
             }
 
-            book = rent.getBook();
+            book = loan.getBook();
 
-            req.setAttribute("rent", rent);
+            req.setAttribute("loan", loan);
         }
 
         if (returnBook != null) {
-            rentDao.deleteRent(Integer.parseInt(id));
+            loanDAO.deleteLoan(Integer.parseInt(id));
 
             resp.sendRedirect(req.getContextPath() + "/dashboard");
 
@@ -103,12 +103,12 @@ public class RentController extends HttpServlet {
         User user = (User) session.getAttribute("user");
 
         String id = req.getParameter("id");
-        String rentId = req.getParameter("rent_id");
+        String loanId = req.getParameter("loan_id");
         String edit = req.getParameter("edit");
         String devolution = req.getParameter("devolution");
 
         if (user == null) {
-            String redirectTo = "/rent?";
+            String redirectTo = "/loan?";
 
             if (edit != null)
                 redirectTo += "edit";
@@ -123,7 +123,7 @@ public class RentController extends HttpServlet {
             return;
         }
 
-        Book book = dao.getBook(Integer.parseInt(id));
+        Book book = bookDAO.getBook(Integer.parseInt(id));
 
         if (book == null) {
             // TODO: Redirect to 404
@@ -132,23 +132,23 @@ public class RentController extends HttpServlet {
             return;
         }
 
-        Rent rent = null;
+        Loan loan = null;
 
-        if (rentId != null)
-            rent = rentDao.getRent(Integer.parseInt(rentId));
+        if (loanId != null)
+            loan = loanDAO.getLoan(Integer.parseInt(loanId));
 
-        if (rent == null) {
-            rent = new Rent();
+        if (loan == null) {
+            loan = new Loan();
 
-            rent.setUser(user.getId());
-            rent.setBook(book);
-            rent.setDate(new Date(new java.util.Date().getTime()));
+            loan.setUser(user.getId());
+            loan.setBook(book);
+            loan.setDate(new Date(new java.util.Date().getTime()));
         }
 
-        rent.setDevolutionDate(Date.valueOf(devolution));
+        loan.setDevolutionDate(Date.valueOf(devolution));
 
         if (edit != null) {
-            boolean success = rentDao.editRent(rent);
+            boolean success = loanDAO.editLoan(loan);
 
             if (success) {
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
@@ -156,7 +156,7 @@ public class RentController extends HttpServlet {
                 return;
             }
         } else {
-            boolean success = rentDao.createRent(rent);
+            boolean success = loanDAO.createLoan(loan);
 
             if (success) {
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
@@ -164,13 +164,13 @@ public class RentController extends HttpServlet {
                 return;
             } else {
                 session.setAttribute("error",
-                        new RentalException(RentalException.Type.BOOK_ALREADY_RENTED, "Livro já alugado!"));
+                        new LoanException(LoanException.Type.BOOK_ALREADY_LOANED, "Livro já alugado!"));
             }
         }
 
         req.setAttribute("book", book);
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/new_rental.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/new_loan.jsp");
 
         rd.forward(req, resp);
         session.removeAttribute("error");

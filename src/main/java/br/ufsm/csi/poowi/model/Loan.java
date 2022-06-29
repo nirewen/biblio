@@ -2,7 +2,7 @@ package br.ufsm.csi.poowi.model;
 
 import java.sql.Date;
 
-public class Rent {
+public class Loan {
     private int id;
     private int user;
     private Book book;

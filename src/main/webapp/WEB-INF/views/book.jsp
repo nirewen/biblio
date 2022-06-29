@@ -40,11 +40,11 @@
                     <c:if test="${not empty user}">
                     <div class="d-flex justify-content-end mt-auto">
                         <c:choose>
-                            <c:when test="${not empty rent}">
-                                <a class="btn btn-primary" href="./rent?postpone&id=${rent.getId()}">Prorrogar</a>
+                            <c:when test="${not empty loan}">
+                                <a class="btn btn-primary" href="./loan?postpone&id=${loan.getId()}">Prorrogar</a>
                             </c:when>
                             <c:otherwise>
-                                <a class="btn btn-primary" href="./rent?id=${book.getId()}">Alugar livro</a>
+                                <a class="btn btn-primary" href="./loan?id=${book.getId()}">Alugar livro</a>
                             </c:otherwise>
                         </c:choose>
                     </div>

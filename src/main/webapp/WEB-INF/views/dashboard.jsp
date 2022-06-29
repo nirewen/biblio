@@ -11,11 +11,11 @@
         <main class="container mt-5">
             <h1>Dashboard</h1>
             <c:choose>
-                <c:when test="${not empty rentals}">
+                <c:when test="${not empty loans}">
                     <p>Aqui estão seus livros alugados</p>
-                    <c:forEach items="${rentals}" var="rent">
-                        <c:set var="rent" value="${rent}" scope="request" />
-                        <jsp:include page="../components/rental_card.jsp" />
+                    <c:forEach items="${loans}" var="loan">
+                        <c:set var="loan" value="${loan}" scope="request" />
+                        <jsp:include page="../components/loan_card.jsp" />
                     </c:forEach>
                 </c:when>
                 <c:otherwise>

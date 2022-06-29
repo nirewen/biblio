@@ -34,14 +34,13 @@
                     </div>
                     <span><em>${book.getAuthor()}</em></span>
                     <p class="bg-light rounded mt-2 p-2">${book.getSynopsis()}</p>
-                    <form class="mt-auto" method="post" action="./rent?edit">
-                        <input type="hidden" name="rent_id" value="${rent.getId()}">
+                    <form class="mt-auto" method="post" action="./loan">
                         <input type="hidden" name="id" value="${book.getId()}">
                         <div class="mb-3">
-                            <label for="devolution">Nova data de devolução</label>
-                            <input type="date" class="form-control" name="devolution" id="devolution" value="${rent.getDevolutionDate()}" />
+                            <label for="devolution">Data de devolução</label>
+                            <input type="date" class="form-control" name="devolution" id="devolution" max="${max_date}" min="${min_date}" />
                         </div>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="submit" class="btn btn-primary">Alugar</button>
                     </form>
                 </div>
             </div>

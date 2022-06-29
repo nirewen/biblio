@@ -8,34 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufsm.csi.poowi.model.Book;
-import br.ufsm.csi.poowi.model.Rent;
+import br.ufsm.csi.poowi.model.Loan;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.util.DBConnect;
 
-public class RentDAO {
+public class LoanDAO {
     private final BookDAO bookDAO = new BookDAO();
 
-    public Rent fromResultSet(ResultSet resultSet) throws SQLException {
-        Rent rent = new Rent();
+    public Loan fromResultSet(ResultSet resultSet) throws SQLException {
+        Loan loan = new Loan();
 
-        rent.setId(resultSet.getInt("id"));
-        rent.setUser(resultSet.getInt("user_id"));
-        rent.setBook(bookDAO.getBook(resultSet.getInt("book_id")));
-        rent.setDate(resultSet.getDate("date"));
-        rent.setDevolutionDate(resultSet.getDate("devolution_date"));
-        rent.setActive(resultSet.getBoolean("active"));
+        loan.setId(resultSet.getInt("id"));
+        loan.setUser(resultSet.getInt("user_id"));
+        loan.setBook(bookDAO.getBook(resultSet.getInt("book_id")));
+        loan.setDate(resultSet.getDate("date"));
+        loan.setDevolutionDate(resultSet.getDate("devolution_date"));
+        loan.setActive(resultSet.getBoolean("active"));
 
-        return rent;
+        return loan;
     }
 
-    public Rent getRent(User user, Book book) {
-        Rent rent = null;
+    public Loan getLoan(User user, Book book) {
+        Loan loan = null;
 
         if (user == null)
             return null;
 
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "SELECT * FROM rentals WHERE book_id = ? AND user_id = ?";
+            String sql = "SELECT * FROM loans WHERE book_id = ? AND user_id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, book.getId());
@@ -44,20 +44,20 @@ public class RentDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                rent = this.fromResultSet(resultSet);
+                loan = this.fromResultSet(resultSet);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return rent;
+        return loan;
     }
 
-    public Rent getRent(int id) {
-        Rent rent = null;
+    public Loan getLoan(int id) {
+        Loan loan = null;
 
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "SELECT * FROM rentals WHERE id = ?";
+            String sql = "SELECT * FROM loans WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, id);
@@ -65,24 +65,24 @@ public class RentDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                rent = this.fromResultSet(resultSet);
+                loan = this.fromResultSet(resultSet);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return rent;
+        return loan;
     }
 
-    public boolean createRent(Rent rent) {
+    public boolean createLoan(Loan loan) {
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "INSERT INTO rentals (user_id, book_id, date, devolution_date) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO loans (user_id, book_id, date, devolution_date) VALUES (?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setInt(1, rent.getUser());
-            preparedStatement.setInt(2, rent.getBook().getId());
-            preparedStatement.setDate(3, rent.getDate());
-            preparedStatement.setDate(4, rent.getDevolutionDate());
+            preparedStatement.setInt(1, loan.getUser());
+            preparedStatement.setInt(2, loan.getBook().getId());
+            preparedStatement.setDate(3, loan.getDate());
+            preparedStatement.setDate(4, loan.getDevolutionDate());
 
             preparedStatement.execute();
 
@@ -97,13 +97,13 @@ public class RentDAO {
         return false;
     }
 
-    public boolean editRent(Rent rent) {
+    public boolean editLoan(Loan loan) {
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "UPDATE rentals SET devolution_date = ? WHERE id = ?";
+            String sql = "UPDATE loans SET devolution_date = ? WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setDate(1, rent.getDevolutionDate());
-            preparedStatement.setInt(2, rent.getId());
+            preparedStatement.setDate(1, loan.getDevolutionDate());
+            preparedStatement.setInt(2, loan.getId());
 
             preparedStatement.execute();
 
@@ -115,9 +115,9 @@ public class RentDAO {
         return false;
     }
 
-    public boolean deleteRent(int id) {
+    public boolean deleteLoan(int id) {
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "DELETE FROM rentals WHERE id = ?";
+            String sql = "UPDATE loans SET active = false WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, id);
@@ -132,11 +132,11 @@ public class RentDAO {
         return false;
     }
 
-    public List<Rent> getRentals(int user) {
-        List<Rent> rentals = new ArrayList<>();
+    public List<Loan> getLoans(int user) {
+        List<Loan> loans = new ArrayList<>();
 
         try (Connection con = new DBConnect().getConnection()) {
-            String sql = "SELECT * FROM rentals LEFT JOIN books ON rentals.book_id = books.id WHERE user_id = ?";
+            String sql = "SELECT * FROM loans LEFT JOIN books ON loans.book_id = books.id WHERE user_id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, user);
@@ -144,12 +144,12 @@ public class RentDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                rentals.add(this.fromResultSet(resultSet));
+                loans.add(this.fromResultSet(resultSet));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return rentals;
+        return loans;
     }
 }
