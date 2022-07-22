@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page isELIgnored="false" %>
 
 <html lang="pt-br">
@@ -29,19 +30,19 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h1>${book.getName()} <small>(${book.getYear()})</small></h1>
                         <c:if test="${user.getPermission() == 8}">
-                        <a href="/biblio/book?id=${book.getId()}&option=edit" class="btn btn-primary">Editar</a>
+                        <a href="/biblio/book/edit/${book.getId()}" class="btn btn-primary">Editar</a>
                         </c:if>
                     </div>
                     <span><em>${book.getAuthor()}</em></span>
                     <p class="bg-light rounded mt-2 p-2">${book.getSynopsis()}</p>
-                    <form class="mt-auto" method="post" action="./loan">
-                        <input type="hidden" name="id" value="${book.getId()}">
+                    <form:form class="mt-auto" method="post" action="./${book.getId()}/new" modelAttribute="loan">
+                        <form:input type="hidden" path="bookId" value="${book.getId()}" />
                         <div class="mb-3">
-                            <label for="devolution">Data de devolução</label>
-                            <input type="date" class="form-control" name="devolution" id="devolution" max="${max_date}" min="${min_date}" />
+                            <form:label path="devolutionDate">Data de devolução</form:label>
+                            <form:input type="date" class="form-control" path="devolutionDate" id="devolution" max="${max_date}" min="${min_date}" />
                         </div>
                         <button type="submit" class="btn btn-primary">Alugar</button>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </main>

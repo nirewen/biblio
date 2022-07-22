@@ -17,8 +17,8 @@ public class LoanDAO {
         Loan loan = new Loan();
 
         loan.setId(resultSet.getInt("id"));
-        loan.setUser(resultSet.getInt("user_id"));
-        loan.setBook(resultSet.getInt("book_id"));
+        loan.setUserId(resultSet.getInt("user_id"));
+        loan.setBookId(resultSet.getInt("book_id"));
         loan.setDate(resultSet.getDate("date"));
         loan.setDevolutionDate(resultSet.getDate("devolution_date"));
         loan.setActive(resultSet.getBoolean("active"));
@@ -77,8 +77,8 @@ public class LoanDAO {
             String sql = "INSERT INTO loans (user_id, book_id, date, devolution_date) VALUES (?, ?, ?, ?)";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setInt(1, loan.getUser());
-            preparedStatement.setInt(2, loan.getBook());
+            preparedStatement.setInt(1, loan.getUserId());
+            preparedStatement.setInt(2, loan.getBookId());
             preparedStatement.setDate(3, loan.getDate());
             preparedStatement.setDate(4, loan.getDevolutionDate());
 

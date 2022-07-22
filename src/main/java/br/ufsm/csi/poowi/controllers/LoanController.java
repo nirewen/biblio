@@ -29,7 +29,7 @@ public class LoanController extends HttpServlet {
     private static final LoanDAO loanDAO = new LoanDAO();
 
     @GetMapping("/{book_id}")
-    protected String loanPage(HttpSession session, Model model, @PathVariable(name = "id") String id) {
+    protected String loanPage(HttpSession session, Model model, @PathVariable(name = "book_id") String id) {
         User user = (User) session.getAttribute("user");
 
         if (id == null || id.isEmpty()) {
@@ -37,7 +37,7 @@ public class LoanController extends HttpServlet {
         }
 
         if (user == null) {
-            session.setAttribute("redirectTo", "/loan");
+            session.setAttribute("redirectTo", "/loan/" + id);
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
             return "redirect:/login";
@@ -51,6 +51,7 @@ public class LoanController extends HttpServlet {
         }
 
         model.addAttribute("book", book);
+        model.addAttribute("loan", new Loan());
 
         return "new_loan";
     }
@@ -64,7 +65,7 @@ public class LoanController extends HttpServlet {
             return "redirect:/dashboard";
         }
 
-        Book book = bookDAO.getBook(loan.getBook());
+        Book book = bookDAO.getBook(loan.getBookId());
 
         model.addAttribute("loan", loan);
         model.addAttribute("book", book);
@@ -105,6 +106,8 @@ public class LoanController extends HttpServlet {
             return "redirect:/books";
         }
 
+        loan.setUserId(user.getId());
+        loan.setBookId(book.getId());
         loan.setDevolutionDate(devolution);
 
         boolean success = loanDAO.createLoan(loan);
@@ -116,24 +119,18 @@ public class LoanController extends HttpServlet {
                     new LoanException(LoanException.Type.BOOK_ALREADY_LOANED, "Livro já alugado!"));
         }
 
-        model.addAttribute("book", book);
-
         session.removeAttribute("error");
 
-        return "new_loan";
+        return "redirect:/loan/" + id;
     }
 
-    @PostMapping("/{loan_id}/edit")
+    @PostMapping("/{loan_id}/postpone")
     public String editLoan(HttpSession session, Model model, @PathVariable(value = "loan_id") String loanId,
             @ModelAttribute Loan loan) {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
-            String redirectTo = "/loan";
-
-            redirectTo += "/" + loanId + "/edit";
-
-            session.setAttribute("redirectTo", redirectTo);
+            session.setAttribute("redirectTo", "/loan" + "/" + loanId + "/postpone");
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
             return "redirect:/login";

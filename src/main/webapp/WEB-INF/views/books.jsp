@@ -13,7 +13,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h1>Livros</h1>
                     <c:if test="${user.getPermission() == 8}">
-                    <a href="/biblio/book?option=new" class="btn btn-primary">+ Livro</a>
+                    <a href="./book/new" class="btn btn-primary">+ Livro</a>
                     </c:if>
                 </div>
 

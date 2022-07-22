@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page isELIgnored="false" %>
 
 <html lang="pt-br">
@@ -34,15 +35,15 @@
                     </div>
                     <span><em>${book.getAuthor()}</em></span>
                     <p class="bg-light rounded mt-2 p-2">${book.getSynopsis()}</p>
-                    <form class="mt-auto" method="post" action="./rent?edit">
-                        <input type="hidden" name="loan_id" value="${loan.getId()}">
-                        <input type="hidden" name="id" value="${book.getId()}">
+                    <form:form class="mt-auto" method="post" action="./loan/${loan.getId()}/postpone" modelAttribute="loan">
+                        <form:input type="hidden" path="id" value="${loan.getId()}" />
+                        <form:input type="hidden" path="bookId" value="${book.getId()}" />
                         <div class="mb-3">
-                            <label for="devolution">Nova data de devolução</label>
-                            <input type="date" class="form-control" name="devolution" id="devolution" value="${rent.getDevolutionDate()}" />
+                            <form:label path="devolutionDate">Nova data de devolução</form:label>
+                            <form:input type="date" class="form-control" path="devolutionDate" id="devolution" value="${rent.getDevolutionDate()}" />
                         </div>
                         <button type="submit" class="btn btn-primary">Salvar</button>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </main>

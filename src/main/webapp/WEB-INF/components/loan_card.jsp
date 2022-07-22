@@ -9,7 +9,7 @@
     </div>
     <div class="col-md-9">
       <div class="card-body">
-        <a href="/biblio/book?id=${loan.getBook().getId()}" class="text-decoration-none text-body">
+        <a href="/biblio/book/${loan.getBook().getId()}" class="text-decoration-none text-body">
           <h5 class="card-title">${loan.getBook().getName()}</h5>
         </a>
         <p class="card-text d-flex flex-column gap-2">
@@ -22,8 +22,8 @@
       <div class="card-body h-100 d-flex flex-column justify-content-between">
       <c:choose>
         <c:when test="${loan.isActive()}">
-          <a class="btn btn-primary" href="/biblio/loan?postpone&id=${loan.getId()}" role="button">Prorrogar</a>
-          <a class="btn btn-light" href="/biblio/loan?return&id=${loan.getId()}" role="button" onclick="return confirm('Deseja devolver ${loan.getBook().getName()}?')">Devolver</a>
+          <a class="btn btn-primary" href="/biblio/loan/${loan.getId()}/postpone" role="button">Prorrogar</a>
+          <a class="btn btn-light" href="/biblio/loan/${loan.getId()}/return" role="button" onclick="return confirm('Deseja devolver ${loan.getBook().getName()}?')">Devolver</a>
         </c:when>
         <c:otherwise>
           <a class="btn btn-success disabled" href="#" role="button">Entregue</a>

@@ -29,7 +29,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h1>${book.getName()} <small>(${book.getYear()})</small></h1>
                         <c:if test="${user.getPermission() == 8}">
-                        <a href="/biblio/book?id=${book.getId()}&option=edit" class="btn btn-primary">Editar</a>
+                        <a href="/biblio/book/edit/${book.getId()}" class="btn btn-primary">Editar</a>
                         </c:if>
                     </div>
                     <span><em>${book.getAuthor()}</em></span>
@@ -41,10 +41,10 @@
                     <div class="d-flex justify-content-end mt-auto">
                         <c:choose>
                             <c:when test="${not empty loan}">
-                                <a class="btn btn-primary" href="./loan?postpone&id=${loan.getId()}">Prorrogar</a>
+                                <a class="btn btn-primary" href="../loan/${loan.getId()}/postpone">Prorrogar</a>
                             </c:when>
                             <c:otherwise>
-                                <a class="btn btn-primary" href="./loan?id=${book.getId()}">Alugar livro</a>
+                                <a class="btn btn-primary" href="../loan/${book.getId()}">Alugar livro</a>
                             </c:otherwise>
                         </c:choose>
                     </div>

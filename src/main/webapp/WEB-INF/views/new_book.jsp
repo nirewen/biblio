@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page isELIgnored="false" %>
+
 <html lang="pt-br">
     <head>
         <jsp:include page="../shared/head.jsp" />
@@ -25,47 +27,46 @@
                             </div>
                         </div>
                     </c:if>
-                    <form method="post" action="./book" enctype="multipart/form-data">
-                        <input type="hidden" name="option" value="new">
+                    <form:form method="post" action="./new" enctype="multipart/form-data" modelAttribute="book">
                         <div class="mb-3">
-                            <label for="cover">Capa</label>
-                            <input type="file" class="form-control ${not empty error ? 'is-invalid' : ''}" name="cover" id="cover" />
+                            <form:label path="cover">Capa</form:label>
+                            <input type="file" class="form-control ${not empty error ? 'is-invalid' : ''}" name="coverFile" id="cover" />
                         </div>
                         <div class="mb-3">
-                            <label for="name">Nome</label>
-                            <input type="text" class="form-control" name="name" id="name" required />
+                            <form:label path="name">Nome</form:label>
+                            <form:input type="text" class="form-control" path="name" id="name" required="true" />
                         </div>
                         <div class="mb-3">
-                            <label for="synopsis">Sinopse</label>
-                            <textarea class="form-control" rows="4" name="synopsis" id="synopsis"></textarea>
+                            <form:label path="synopsis">Sinopse</form:label>
+                            <form:textarea class="form-control" rows="4" path="synopsis" id="synopsis"></form:textarea>
                         </div>
                         <div class="d-flex gap-3">
                             <div class="mb-3 flex-fill">
-                                <label for="pages">Páginas</label>
-                                <input type="number" class="form-control" name="pages" id="pages" />
+                                <form:label path="pages">Páginas</form:label>
+                                <form:input type="number" class="form-control" path="pages" id="pages" />
                             </div>
                             <div class="mb-3 flex-fill">
-                                <label for="chapters">Capítulos</label>
-                                <input type="number" class="form-control" name="chapters" id="chapters" />
+                                <form:label path="chapters">Capítulos</form:label>
+                                <form:input type="number" class="form-control" path="chapters" id="chapters" />
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="author">Autor</label>
-                            <input type="text" class="form-control" name="author" id="author" required />
+                            <form:label path="author">Autor</form:label>
+                            <form:input type="text" class="form-control" path="author" id="author" required="true" />
                         </div>
                         <div class="mb-3">
-                            <label for="publisher">Editora</label>
-                            <input type="text" class="form-control" name="publisher" id="publisher" />
+                            <form:label path="publisher">Editora</form:label>
+                            <form:input type="text" class="form-control" path="publisher" id="publisher" />
                         </div>
                         <div class="mb-3">
-                            <label for="year">Ano</label>
-                            <input type="number" class="form-control" name="year" id="year" />
+                            <form:label path="year">Ano</form:label>
+                            <form:input type="number" class="form-control" path="year" id="year" />
                         </div>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">Adicionar</button>
                             <a href="./books" class="btn btn-light">Voltar</a>
                         </div>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </main>

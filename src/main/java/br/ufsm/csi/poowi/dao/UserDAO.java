@@ -23,6 +23,27 @@ public class UserDAO {
         return user;
     }
 
+    public User getUser(int id) {
+        User user = null;
+
+        try (Connection con = new DBConnect().getConnection()) {
+            String sql = "SELECT * FROM users WHERE id = ?;";
+
+            PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                user = this.fromResultSet(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
     public User getUser(String email) {
         User user = null;
 

@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.ufsm.csi.poowi.dao.BookDAO;
 import br.ufsm.csi.poowi.dao.LoanDAO;
@@ -27,11 +27,8 @@ import br.ufsm.csi.poowi.util.BookException;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
-@WebServlet("/book")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
-        maxFileSize = 1024 * 1024 * 10, // 10 MB
-        maxRequestSize = 1024 * 1024 * 100 // 100 MB
-)
+@Controller
+@RequestMapping("/book")
 public class BookController extends HttpServlet {
     private final BookDAO bookDAO = new BookDAO();
     private final LoanDAO loanDAO = new LoanDAO();
@@ -44,209 +41,132 @@ public class BookController extends HttpServlet {
         }
     };
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
+    @GetMapping("/{id}")
+    protected String getBookById(HttpSession session, Model model, @PathVariable String id) {
         User user = (User) session.getAttribute("user");
 
-        String option = req.getParameter("option");
-        String id = req.getParameter("id");
+        Book book = bookDAO.getBook(Integer.parseInt(id));
 
-        String route = "/WEB-INF/views/book.jsp";
-
-        if (option != null && !option.isEmpty()) {
-            if (user == null) {
-                session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-
-                String redirectTo = "/book?";
-
-                if (id != null && !id.isEmpty())
-                    redirectTo += "id=" + id + "&";
-
-                redirectTo += "option=" + option;
-
-                session.setAttribute("redirectTo", redirectTo);
-
-                resp.sendRedirect(req.getContextPath() + "/login");
-                return;
-            }
-
-            if (user.getPermission() != 8) {
-                session.setAttribute("error",
-                        new UserException(Type.INSUFFICIENT_PERMISSIONS, "Permissões insuficientes"));
-
-                resp.sendRedirect(req.getContextPath() + "/book");
-
-                return;
-            }
-
-            if (option.equals("edit")) {
-                route = "/WEB-INF/views/edit_book.jsp";
-
-                if (id == null || id.isEmpty()) {
-                    // redirectionar para a lista caso id ausente
-                    resp.sendRedirect(req.getContextPath() + "/books");
-
-                    return;
-                }
-
-                Book book = bookDAO.getBook(Integer.parseInt(id));
-
-                if (book == null) {
-                    // TODO: Redirect to 404
-                    return;
-                }
-
-                req.setAttribute("book", book);
-            }
-
-            if (option.equals("new"))
-                route = "/WEB-INF/views/new_book.jsp";
-
-            if (option.equals("delete")) {
-                boolean success = bookDAO.deleteBook(Integer.parseInt(id));
-
-                if (success) {
-                    session.setAttribute("message", "Livro excluido com sucesso!");
-
-                    resp.sendRedirect(req.getContextPath() + "/books");
-
-                    return;
-                }
-            }
-        } else if (id == null || id.isEmpty()) {
-            // redirectionar para a lista caso id ausente
-            resp.sendRedirect(req.getContextPath() + "/books");
-
-            return;
-        } else {
-            Book book = bookDAO.getBook(Integer.parseInt(id));
-
-            if (book == null) {
-                resp.sendRedirect(req.getContextPath() + "/books");
-                return;
-            }
-
-            Loan loan = loanDAO.getLoan(user, book);
-
-            if (loan != null)
-                req.setAttribute("loan", loan);
-
-            req.setAttribute("book", book);
+        if (book == null) {
+            return "redirect:/books";
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher(route);
+        Loan loan = loanDAO.getLoan(user, book);
 
-        rd.forward(req, resp);
+        if (loan != null)
+            model.addAttribute("loan", loan);
+
+        model.addAttribute("book", book);
+
+        return "book";
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-
-        HttpSession session = req.getSession();
+    @GetMapping("/new")
+    protected String newBookPage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
-
-        String option = req.getParameter("option");
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("redirectTo", "/book/new");
 
-            String redirectTo = "/book";
-
-            if (option != null)
-                redirectTo += "?option=" + option;
-
-            session.setAttribute("redirectTo", redirectTo);
-
-            resp.sendRedirect(req.getContextPath() + "/login");
-
-            return;
+            return "redirect:/login";
         }
 
-        int id = NumberUtils.toInt(req.getParameter("id"), bookDAO.nextId());
+        model.addAttribute("book", new Book());
 
-        Book book = bookDAO.getBook(id);
+        return "new_book";
+    }
 
-        if (book == null)
-            book = new Book();
+    @PostMapping("/new")
+    protected String newBook(HttpSession session, @RequestParam("coverFile") MultipartFile coverFile,
+            @ModelAttribute("book") Book book)
+            throws IOException {
+        User user = (User) session.getAttribute("user");
 
-        String name = req.getParameter("name");
-        String synopsis = StringUtils.defaultIfEmpty(req.getParameter("synopsis"), book.getSynopsis());
-        int pages = NumberUtils.toInt(req.getParameter("pages"), book.getPages());
-        float chapters = NumberUtils.toFloat(req.getParameter("chapters"), book.getChapters());
-        String author = StringUtils.defaultIfEmpty(req.getParameter("author"), book.getAuthor());
-        String publisher = StringUtils.defaultIfEmpty(req.getParameter("publisher"), book.getPublisher());
-        int year = NumberUtils.toInt(req.getParameter("year"), 2022);
-        String cover = StringUtils.defaultIfEmpty(req.getParameter("cover"),
-                StringUtils.defaultIfEmpty(book.getCover(), "/biblio/image/covers/default.png"));
+        if (user == null) {
+            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("redirectTo", "/book/new");
 
-        Part coverFile = req.getPart("cover");
+            return "redirect:/login";
+        }
 
-        String fileName = coverFile.getSubmittedFileName();
+        String fileName = coverFile.getOriginalFilename();
         String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
 
-        if (!fileName.isEmpty()) {
-            if (!VALID_EXTENSIONS.contains(ext)) {
-                session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
-                        "Tipo de arquivo para capa inválido!"));
+        if (!VALID_EXTENSIONS.contains(ext)) {
+            session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
+                    "Tipo de arquivo para capa inválido!"));
 
-                String redirectTo = "/book?";
-
-                if (req.getParameter("id") != null)
-                    redirectTo += "id=" + id + "&";
-
-                redirectTo += "option=" + option;
-
-                resp.sendRedirect(req.getContextPath() + redirectTo);
-
-                return;
-            } else {
-                InputStream coverIS = coverFile.getInputStream();
-                byte[] imageBytes = new byte[(int) coverFile.getSize()];
-
-                coverIS.read(imageBytes, 0, imageBytes.length);
-                coverIS.close();
-
-                cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
-            }
+            return "redirect:/book/new";
         }
 
-        book.setName(name);
-        book.setSynopsis(synopsis);
-        book.setPages(pages);
-        book.setChapters(chapters);
-        book.setAuthor(author);
-        book.setPublisher(publisher);
-        book.setYear(year);
+        InputStream coverIS = coverFile.getInputStream();
+        byte[] imageBytes = new byte[(int) coverFile.getSize()];
+
+        coverIS.read(imageBytes, 0, imageBytes.length);
+        coverIS.close();
+
+        String cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
+
         book.setCover(cover);
 
-        if (option.equals("new")) {
-            boolean success = bookDAO.createBook(book);
+        bookDAO.createBook(book);
 
-            if (success) {
-                session.setAttribute("message", "Livro criado com sucesso!");
+        return "redirect:/books";
+    }
 
-                resp.sendRedirect(req.getContextPath() + "/books");
+    @GetMapping("/edit/{id}")
+    protected String editBookPage(HttpSession session, Model model, @PathVariable String id) {
+        User user = (User) session.getAttribute("user");
 
-                return;
-            }
+        if (user == null) {
+            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("redirectTo", "/edit/" + id);
+
+            return "redirect:/login";
         }
 
-        if (option.equals("edit")) {
-            boolean success = bookDAO.updateBook(id, book);
+        Book book = bookDAO.getBook(Integer.parseInt(id));
 
-            if (success) {
-                session.setAttribute("message", "Livro atualizado com sucesso!");
+        model.addAttribute("book", book);
 
-                resp.sendRedirect(req.getContextPath() + "/book?id=" + id);
+        return "edit_book";
+    }
 
-                return;
-            }
+    @PostMapping("/edit/{id}")
+    protected String editBook(HttpSession session, MultipartFile coverFile, @ModelAttribute("book") Book book)
+            throws IOException {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("redirectTo", "/edit/" + book.getId());
+
+            return "redirect:/login";
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/book.jsp");
+        String fileName = coverFile.getOriginalFilename();
+        String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
 
-        rd.forward(req, resp);
+        if (!VALID_EXTENSIONS.contains(ext)) {
+            session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
+                    "Tipo de arquivo para capa inválido!"));
+
+            return "redirect:/book/edit" + book.getId();
+        }
+
+        InputStream coverIS = coverFile.getInputStream();
+        byte[] imageBytes = new byte[(int) coverFile.getSize()];
+
+        coverIS.read(imageBytes, 0, imageBytes.length);
+        coverIS.close();
+
+        String cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
+
+        book.setCover(cover);
+
+        bookDAO.updateBook(book.getId(), book);
+
+        return "redirect:/book/" + book.getId();
     }
 }
