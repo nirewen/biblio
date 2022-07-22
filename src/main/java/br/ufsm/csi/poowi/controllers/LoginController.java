@@ -1,16 +1,15 @@
 package br.ufsm.csi.poowi.controllers;
 
-import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
@@ -18,57 +17,45 @@ import br.ufsm.csi.poowi.service.UserService;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
-@WebServlet("/login")
+@Controller
+@RequestMapping("/login")
 public class LoginController extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-
+    @GetMapping
+    protected String loginPage(HttpSession session) {
         User user = (User) session.getAttribute("user");
 
         if (user != null) {
-            resp.sendRedirect(req.getContextPath() + "/dashboard");
-
-            return;
+            return "redirect:/dashboard";
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
-
-        rd.forward(req, resp);
-
         session.removeAttribute("error");
+
+        return "login";
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
+    @PostMapping
+    protected String login(HttpSession session, Model model, @ModelAttribute User loginInfo) {
         String redirectTo = StringUtils.defaultIfEmpty((String) session.getAttribute("redirectTo"), "/dashboard");
 
         UserDAO dao = new UserDAO();
         UserService us = new UserService();
 
-        User user = dao.getUser(email);
+        User user = dao.getUser(loginInfo.getEmail());
 
-        if (us.autenticado(user, password)) {
+        if (us.autenticado(user, loginInfo.getPassword())) {
             session.setAttribute("user", user);
 
-            resp.sendRedirect(req.getContextPath() + redirectTo);
-
-            return;
+            return "redirect:" + redirectTo;
         } else {
             UserException error = new UserException(Type.INCORRECT_CREDENTIALS, "Email ou senha incorretos");
-            req.setAttribute("error", error);
-            req.setAttribute("email", email);
+
+            model.addAttribute("error", error);
+            model.addAttribute("email", loginInfo.getEmail());
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/login.jsp");
-
-        rd.forward(req, resp);
-
-        if (req.getAttribute("error") == null)
+        if (model.getAttribute("error") == null)
             session.removeAttribute("redirectTo");
+
+        return "login";
     }
 }

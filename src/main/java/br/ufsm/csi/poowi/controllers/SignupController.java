@@ -1,61 +1,51 @@
 package br.ufsm.csi.poowi.controllers;
 
-import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.util.UserException;
 
-@WebServlet("/signup")
-public class SignupController extends HttpServlet {
+@Controller
+@RequestMapping("/signup")
+public class SignupController {
     private final UserDAO dao = new UserDAO();
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-
+    @GetMapping
+    protected String signUpPage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
 
         if (user != null) {
-            resp.sendRedirect(req.getContextPath() + "/dashboard");
-
-            return;
+            return "redirect:/dashboard";
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/signup.jsp");
+        model.addAttribute("newUser", new User());
 
-        rd.forward(req, resp);
+        return "signup";
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
-
+    @PostMapping
+    protected String signUp(Model model, @ModelAttribute("newUser") User user) {
         try {
-            boolean success = dao.createUser(email, password);
+            boolean success = dao.createUser(user.getEmail(), user.getPassword());
 
             if (success) {
-                req.setAttribute("message", "Usuário criado com sucesso!");
+                // TODO: session!
+                model.addAttribute("message", "Usuário criado com sucesso!");
 
-                resp.sendRedirect(req.getContextPath() + "/login");
-
-                return;
+                return "redirect:/login";
             }
         } catch (UserException e) {
-            req.setAttribute("error", e);
+            model.addAttribute("error", e);
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/signup.jsp");
-
-        rd.forward(req, resp);
+        return "signup";
     }
 }

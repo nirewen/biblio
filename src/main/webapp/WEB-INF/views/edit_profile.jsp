@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page isELIgnored="false" %>
+
 <html lang="pt-br">
     <head>
         <jsp:include page="../shared/head.jsp" />
@@ -10,35 +12,41 @@
         <jsp:include page="../components/navbar.jsp" />
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
-                <form method="post" action="./profile">
+                <form:form method="post" action="./edit" modelAttribute="user">
                     <div class="d-flex align-items-center justify-content-between">
                         <h1>Perfil de ${user.getName()}</h1>
                         <div class="d-flex gap-2">
-                            <a href="./profile/edit" class="btn btn-primary">Editar</a>
+                            <a href="../profile" class="btn btn-light">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     </div>
+                    <form:input type="hidden" path="id" />
                     <div class="mb-3">
-                        <label for="name" class="form-label">Nome</label>
+                        <form:label path="name" class="form-label">Nome</form:label>
                         <div class="d-flex gap-3">
                             <input type="text" class="form-control" value="${user.getName()}" readonly>
+                            <form:input type="text" class="form-control" path="name" name="name" placeholder="não alterado" />
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label ${not empty error && error.getType().name().equals("DUPLICATE_USER") ? 'text-danger' : ''}">Email</label>
+                        <form:label path="email" class="form-label ${not empty error && error.getType().name().equals('DUPLICATE_USER') ? 'text-danger' : ''}">Email</form:label>
                         <div class="d-flex gap-3">
-                            <input type="email" class="form-control" value="${user.getEmail()}" readonly>
+                            <input type="email" class="form-control" value="${user.getEmail()}" readonly />
+                            <form:input type="email" class="form-control ${not empty error && error.getType().name().equals('DUPLICATE_USER') ? 'border-danger' : ''}" path="email" name="email"  placeholder="não alterado" />
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="new_password" class="form-label">Senha</label>
+                        <form:label path="password" class="form-label">Senha</form:label>
                         <div class="d-flex gap-3">
-                            <input type="password" class="form-control ${not empty error && error.getType().name().equals("INCORRECT_CREDENTIALS") ? 'border-danger' : ''}" id="password" name="password" value="passwordpassword" readonly>
+                            <form:input type="password" class="form-control ${not empty error && error.getType().name().equals('INCORRECT_CREDENTIALS') ? 'border-danger' : ''}" path="password" name="password" placeholder="senha atual" required="true" />
+                            <form:input type="password" class="form-control" path="newPassword" name="new_password"  placeholder="não alterada" />
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="dob" class="form-label">Data de Nascimento</label>
+                        <form:label path="dateOfBirth" class="form-label">Data de Nascimento</form:label>
                         <div class="d-flex gap-3">
-                            <input type="date" class="form-control" value="${user.getDateOfBirth().toString()}" readonly>
+                            <input type="date" class="form-control" value="${user.getDateOfBirth().toString()}" readonly />
+                            <form:input type="date" class="form-control" path="dateOfBirth" name="date_of_birth" />
                         </div>
                     </div>
                      <c:if test="${not empty error}">
@@ -61,7 +69,7 @@
                             </div>
                         </div>
                     </c:if>
-                </form>
+                </form:form>
             </div>
         </main>
     </body>

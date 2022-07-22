@@ -1,20 +1,15 @@
 package br.ufsm.csi.poowi.controllers;
 
-import java.io.IOException;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+@Controller
+@RequestMapping("/")
+public class HomeController {
 
-@WebServlet("/index.html")
-public class HomeController extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/home.jsp");
-
-        rd.forward(req, resp);
+    @GetMapping
+    protected String homePage() {
+        return "home";
     }
 }

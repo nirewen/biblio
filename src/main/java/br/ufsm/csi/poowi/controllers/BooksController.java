@@ -1,30 +1,27 @@
 package br.ufsm.csi.poowi.controllers;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.ufsm.csi.poowi.dao.BookDAO;
 import br.ufsm.csi.poowi.model.Book;
 
-@WebServlet("/books")
-public class BooksController extends HttpServlet {
+@Controller
+@RequestMapping("/books")
+public class BooksController {
+    // TODO: use service
     private static final BookDAO dao = new BookDAO();
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @GetMapping
+    protected String booksPage(Model model) {
         List<Book> books = dao.getBookList();
 
-        req.setAttribute("books", books);
+        model.addAttribute("books", books);
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/books.jsp");
-
-        rd.forward(req, resp);
+        return "books";
     }
 }

@@ -1,112 +1,95 @@
 package br.ufsm.csi.poowi.controllers;
 
-import java.io.IOException;
-import java.sql.Date;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.util.EditedUser;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
-@WebServlet("/profile")
+@Controller
+@RequestMapping("/profile")
 public class ProfileController extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
+
+    @GetMapping
+    protected String profilePage(HttpSession session) {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
-            String redirectTo = "/profile";
-
-            if (req.getParameter("edit") != null)
-                redirectTo += "?edit";
-
-            session.setAttribute("redirectTo", redirectTo);
-
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
-        }
-
-        if (req.getParameter("edit") != null)
-            req.setAttribute("edit", true);
-
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
-
-        rd.forward(req, resp);
-
-        session.removeAttribute("message");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
             session.setAttribute("redirectTo", "/profile");
 
-            resp.sendRedirect(req.getContextPath() + "/login");
-            return;
+            return "redirect:/login";
         }
 
-        String email = StringUtils.defaultIfEmpty(req.getParameter("email"), user.getEmail());
-        String password = StringUtils.defaultIfEmpty(req.getParameter("new_password"), user.getPassword());
-        String currentPassword = req.getParameter("password");
-        String name = StringUtils.defaultIfEmpty(req.getParameter("name"), user.getName());
-        Date dateOfBirth = user.getDateOfBirth();
+        session.removeAttribute("message");
 
-        if (req.getParameter("date_of_birth") != null && !req.getParameter("date_of_birth").isEmpty()) {
-            String dateOfBirthStr = req.getParameter("date_of_birth");
+        return "profile";
+    }
 
-            dateOfBirth = Date.valueOf(dateOfBirthStr);
+    @GetMapping("/edit")
+    protected String editUserPage(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+
+            session.setAttribute("redirectTo", "/profile/edit");
+
+            return "redirect:/login";
         }
 
-        if (!user.getPassword().equals(currentPassword)) {
-            req.setAttribute("error", new UserException(Type.INCORRECT_CREDENTIALS,
+        EditedUser editedUser = new EditedUser(user);
+
+        model.addAttribute("user", editedUser);
+
+        return "edit_profile";
+    }
+
+    @PostMapping("/edit")
+    protected String editUser(HttpSession session, Model model, @ModelAttribute("user") EditedUser newUser) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+
+            session.setAttribute("redirectTo", "/profile");
+
+            return "redirect:/login";
+        }
+
+        if (!user.getPassword().equals(newUser.getPassword())) {
+            model.addAttribute("error", new UserException(Type.INCORRECT_CREDENTIALS,
                     "Senha atual incorreta"));
 
-            RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
-
-            rd.forward(req, resp);
-
-            return;
+            return "profile";
         }
+
+        newUser.setPassword(newUser.getNewPassword().isEmpty() ? newUser.getPassword() : newUser.getNewPassword());
 
         UserDAO dao = new UserDAO();
 
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setName(name);
-        user.setDateOfBirth(dateOfBirth);
-
         try {
-            dao.updateUser(user);
+            dao.updateUser(newUser);
 
-            session.setAttribute("user", user);
+            session.setAttribute("user", newUser);
             session.setAttribute("message", "Usuário atualizado");
 
-            resp.sendRedirect(req.getContextPath() + "/profile");
+            return "redirect:/profile";
         } catch (UserException e) {
-            req.setAttribute("error", e);
+            model.addAttribute("error", e);
         }
 
-        RequestDispatcher rd = req.getRequestDispatcher("/WEB-INF/views/profile.jsp");
-
-        req.setAttribute("edit", true);
-
-        rd.forward(req, resp);
+        return "redirect:/profile";
     }
 }

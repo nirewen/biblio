@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page isELIgnored="false" %>
 <html lang="pt-br">
     <head>
@@ -11,14 +12,14 @@
         <main class="container d-flex flex-column align-items-center mt-5">
             <div class="d-flex flex-column w-50">
                 <h1>Criar uma conta</h1>
-                <form method="post" action="./signup">
+                <form:form method="post" action="./signup" modelAttribute="newUser">
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" id="email" name="email" placeholder="insira o email" value="${email}">
+                        <form:label path="email" class="form-label">Email</form:label>
+                        <form:input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" path="email" name="email" placeholder="insira o email" />
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Senha</label>
-                        <input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" id="password" name="password" placeholder="insira a senha">
+                        <form:label path="password" class="form-label">Senha</form:label>
+                        <form:input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" path="password" name="password" placeholder="insira a senha" />
                     </div>
                      <c:if test="${not empty error}">
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
@@ -34,7 +35,7 @@
                         </div>
                     </c:if>
                     <button type="submit" class="btn btn-primary">Criar conta</button>
-                </form>
+                </form:form>
                 <b>Já possui uma conta? <a href="./login">Fazer login</a></b>
             </div>
         </main>

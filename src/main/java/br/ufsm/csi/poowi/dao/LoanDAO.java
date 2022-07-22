@@ -13,14 +13,12 @@ import br.ufsm.csi.poowi.model.User;
 import br.ufsm.csi.poowi.util.DBConnect;
 
 public class LoanDAO {
-    private final BookDAO bookDAO = new BookDAO();
-
     public Loan fromResultSet(ResultSet resultSet) throws SQLException {
         Loan loan = new Loan();
 
         loan.setId(resultSet.getInt("id"));
         loan.setUser(resultSet.getInt("user_id"));
-        loan.setBook(bookDAO.getBook(resultSet.getInt("book_id")));
+        loan.setBook(resultSet.getInt("book_id"));
         loan.setDate(resultSet.getDate("date"));
         loan.setDevolutionDate(resultSet.getDate("devolution_date"));
         loan.setActive(resultSet.getBoolean("active"));
@@ -80,7 +78,7 @@ public class LoanDAO {
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
             preparedStatement.setInt(1, loan.getUser());
-            preparedStatement.setInt(2, loan.getBook().getId());
+            preparedStatement.setInt(2, loan.getBook());
             preparedStatement.setDate(3, loan.getDate());
             preparedStatement.setDate(4, loan.getDevolutionDate());
 
