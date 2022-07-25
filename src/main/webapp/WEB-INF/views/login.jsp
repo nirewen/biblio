@@ -17,11 +17,11 @@
                 <form method="post" action="./login">
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" id="email" name="email" placeholder="insira o email" value="${email}">
+                        <input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" id="email" name="email" placeholder="insira o email" value="${email}" autofocus />
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Senha</label>
-                        <input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" id="password" name="password" placeholder="insira a senha">
+                        <input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" id="password" name="password" placeholder="insira a senha" />
                     </div>
                      <c:if test="${not empty error}">
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
