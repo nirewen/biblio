@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.ufsm.csi.poowi.dao.BookDAO;
-import br.ufsm.csi.poowi.dao.LoanDAO;
 import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.model.Loan;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.service.BookService;
+import br.ufsm.csi.poowi.service.LoanService;
 import br.ufsm.csi.poowi.util.BookException;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
@@ -30,8 +30,8 @@ import br.ufsm.csi.poowi.util.UserException.Type;
 @Controller
 @RequestMapping("/book")
 public class BookController extends HttpServlet {
-    private final BookDAO bookDAO = new BookDAO();
-    private final LoanDAO loanDAO = new LoanDAO();
+    private final BookService bookService = new BookService();
+    private final LoanService loanService = new LoanService();
     private final ArrayList<String> VALID_EXTENSIONS = new ArrayList<String>() {
         {
             add("jpg");
@@ -45,13 +45,13 @@ public class BookController extends HttpServlet {
     protected String getBookById(HttpSession session, Model model, @PathVariable Integer id) {
         User user = (User) session.getAttribute("user");
 
-        Book book = bookDAO.getBook(id);
+        Book book = bookService.getBook(id);
 
         if (book == null) {
             return "redirect:/books";
         }
 
-        Loan loan = loanDAO.getLoan(user, book);
+        Loan loan = loanService.getLoan(user, book);
 
         if (loan != null)
             model.addAttribute("loan", loan);
@@ -110,7 +110,7 @@ public class BookController extends HttpServlet {
 
         book.setCover(cover);
 
-        bookDAO.createBook(book);
+        bookService.createBook(book);
 
         return "redirect:/books";
     }
@@ -126,7 +126,7 @@ public class BookController extends HttpServlet {
             return "redirect:/login";
         }
 
-        Book book = bookDAO.getBook(id);
+        Book book = bookService.getBook(id);
 
         model.addAttribute("book", book);
 
@@ -166,12 +166,12 @@ public class BookController extends HttpServlet {
 
             book.setCover(cover);
         } else {
-            Book oldBook = bookDAO.getBook(book.getId());
+            Book oldBook = bookService.getBook(book.getId());
 
             book.setCover(oldBook.getCover());
         }
 
-        bookDAO.updateBook(book.getId(), book);
+        bookService.updateBook(book.getId(), book);
 
         return "redirect:/book/" + book.getId();
     }

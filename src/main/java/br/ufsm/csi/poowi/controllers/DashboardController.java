@@ -7,15 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.ufsm.csi.poowi.dao.LoanDAO;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.service.LoanService;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
 @Controller
 @RequestMapping("/dashboard")
 public class DashboardController {
-    private final LoanDAO loanDAO = new LoanDAO();
+    private final LoanService loanService = new LoanService();
 
     @GetMapping
     protected String dashboardPage(HttpSession session, Model model) {
@@ -28,7 +28,7 @@ public class DashboardController {
             return "redirect:/login";
         }
 
-        model.addAttribute("loans", loanDAO.getLoans(user.getId()));
+        model.addAttribute("loans", loanService.getLoanList(user.getId()));
 
         return "dashboard";
     }

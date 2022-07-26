@@ -7,18 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.ufsm.csi.poowi.dao.BookDAO;
 import br.ufsm.csi.poowi.model.Book;
+import br.ufsm.csi.poowi.service.BookService;
 
 @Controller
 @RequestMapping("/books")
 public class BooksController {
-    // TODO: use service
-    private static final BookDAO dao = new BookDAO();
+    private static final BookService bookService = new BookService();
 
     @GetMapping
     protected String booksPage(Model model) {
-        List<Book> books = dao.getBookList();
+        List<Book> books = bookService.getBookList();
 
         model.addAttribute("books", books);
 

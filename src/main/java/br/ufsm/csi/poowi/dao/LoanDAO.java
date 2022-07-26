@@ -130,7 +130,7 @@ public class LoanDAO {
         return false;
     }
 
-    public List<Loan> getLoans(int user) {
+    public List<Loan> getLoanList(int user) {
         List<Loan> loans = new ArrayList<>();
 
         try (Connection con = new DBConnect().getConnection()) {

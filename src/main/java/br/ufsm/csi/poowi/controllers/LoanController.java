@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.ufsm.csi.poowi.dao.BookDAO;
-import br.ufsm.csi.poowi.dao.LoanDAO;
 import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.model.Loan;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.service.BookService;
+import br.ufsm.csi.poowi.service.LoanService;
 import br.ufsm.csi.poowi.util.LoanException;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
@@ -25,8 +25,8 @@ import br.ufsm.csi.poowi.util.UserException.Type;
 @Controller
 @RequestMapping("/loan")
 public class LoanController extends HttpServlet {
-    private static final BookDAO bookDAO = new BookDAO();
-    private static final LoanDAO loanDAO = new LoanDAO();
+    private static final BookService bookService = new BookService();
+    private static final LoanService loanService = new LoanService();
 
     @GetMapping("/{book_id}")
     protected String loanPage(HttpSession session, Model model, @PathVariable(name = "book_id") String id) {
@@ -43,7 +43,7 @@ public class LoanController extends HttpServlet {
             return "redirect:/login";
         }
 
-        Book book = bookDAO.getBook(Integer.parseInt(id));
+        Book book = bookService.getBook(Integer.parseInt(id));
 
         if (book == null) {
             // TODO: Redirect to 404
@@ -59,13 +59,13 @@ public class LoanController extends HttpServlet {
     @GetMapping("/{loan_id}/postpone")
     public String postponeLoan(HttpSession session, Model model,
             @PathVariable(value = "loan_id", required = true) String id) {
-        Loan loan = loanDAO.getLoan(Integer.parseInt(id));
+        Loan loan = loanService.getLoan(Integer.parseInt(id));
 
         if (loan == null) {
             return "redirect:/dashboard";
         }
 
-        Book book = bookDAO.getBook(loan.getBookId());
+        Book book = bookService.getBook(loan.getBookId());
 
         model.addAttribute("loan", loan);
         model.addAttribute("book", book);
@@ -76,7 +76,7 @@ public class LoanController extends HttpServlet {
     @GetMapping("/{loan_id}/return")
     public String returnBook(HttpSession session, Model model,
             @PathVariable(value = "loan_id", required = true) Integer id) {
-        loanDAO.deleteLoan(id);
+        loanService.deleteLoan(id);
 
         return "redirect:/dashboard";
     }
@@ -99,7 +99,7 @@ public class LoanController extends HttpServlet {
 
         Date devolution = loan.getDevolutionDate();
 
-        Book book = bookDAO.getBook(id);
+        Book book = bookService.getBook(id);
 
         if (book == null) {
             // TODO: Redirect to 404
@@ -110,7 +110,7 @@ public class LoanController extends HttpServlet {
         loan.setBookId(book.getId());
         loan.setDevolutionDate(devolution);
 
-        boolean success = loanDAO.createLoan(loan);
+        boolean success = loanService.createLoan(loan);
 
         if (success) {
             return "redirect:/dashboard";
@@ -136,7 +136,7 @@ public class LoanController extends HttpServlet {
             return "redirect:/login";
         }
 
-        boolean success = loanDAO.editLoan(loan);
+        boolean success = loanService.editLoan(loan);
 
         if (success) {
             return "redirect:/dashboard";
