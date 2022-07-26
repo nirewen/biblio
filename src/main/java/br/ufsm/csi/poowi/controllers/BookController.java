@@ -42,10 +42,10 @@ public class BookController extends HttpServlet {
     };
 
     @GetMapping("/{id}")
-    protected String getBookById(HttpSession session, Model model, @PathVariable String id) {
+    protected String getBookById(HttpSession session, Model model, @PathVariable Integer id) {
         User user = (User) session.getAttribute("user");
 
-        Book book = bookDAO.getBook(Integer.parseInt(id));
+        Book book = bookDAO.getBook(id);
 
         if (book == null) {
             return "redirect:/books";
@@ -115,32 +115,32 @@ public class BookController extends HttpServlet {
         return "redirect:/books";
     }
 
-    @GetMapping("/edit/{id}")
-    protected String editBookPage(HttpSession session, Model model, @PathVariable String id) {
+    @GetMapping("/{id}/edit")
+    protected String editBookPage(HttpSession session, Model model, @PathVariable Integer id) {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/edit/" + id);
+            session.setAttribute("redirectTo", "/book/" + id + "/edit");
 
             return "redirect:/login";
         }
 
-        Book book = bookDAO.getBook(Integer.parseInt(id));
+        Book book = bookDAO.getBook(id);
 
         model.addAttribute("book", book);
 
         return "edit_book";
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/{id}/edit")
     protected String editBook(HttpSession session, MultipartFile coverFile, @ModelAttribute("book") Book book)
             throws IOException {
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
             session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/edit/" + book.getId());
+            session.setAttribute("redirectTo", "/book/" + book.getId() + "/edit");
 
             return "redirect:/login";
         }
@@ -148,22 +148,28 @@ public class BookController extends HttpServlet {
         String fileName = coverFile.getOriginalFilename();
         String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
 
-        if (!VALID_EXTENSIONS.contains(ext)) {
-            session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
-                    "Tipo de arquivo para capa inválido!"));
+        if (!fileName.isEmpty()) {
+            if (!VALID_EXTENSIONS.contains(ext)) {
+                session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
+                        "Tipo de arquivo para capa inválido!"));
 
-            return "redirect:/book/edit" + book.getId();
+                return "redirect:/book/" + book.getId() + "/edit";
+            }
+
+            InputStream coverIS = coverFile.getInputStream();
+            byte[] imageBytes = new byte[(int) coverFile.getSize()];
+
+            coverIS.read(imageBytes, 0, imageBytes.length);
+            coverIS.close();
+
+            String cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
+
+            book.setCover(cover);
+        } else {
+            Book oldBook = bookDAO.getBook(book.getId());
+
+            book.setCover(oldBook.getCover());
         }
-
-        InputStream coverIS = coverFile.getInputStream();
-        byte[] imageBytes = new byte[(int) coverFile.getSize()];
-
-        coverIS.read(imageBytes, 0, imageBytes.length);
-        coverIS.close();
-
-        String cover = "data:image/" + ext + ";base64," + Base64.encodeBase64String(imageBytes);
-
-        book.setCover(cover);
 
         bookDAO.updateBook(book.getId(), book);
 

@@ -27,11 +27,11 @@
                             </div>
                         </div>
                     </c:if>
-                    <form:form method="post" action="./edit/${book.getId()}" enctype="multipart/form-data" modelAttribute="book">
+                    <form:form method="post" action="../${book.getId()}/edit" enctype="multipart/form-data" modelAttribute="book">
                         <form:input type="hidden" path="id" />
                         <div class="mb-3">
-                            <form:label áth="cover">Capa</form:label>
-                            <form:input type="file" class="form-control ${not empty error ? 'is-invalid' : ''}" path="cover" id="cover" />
+                            <form:label path="cover">Capa</form:label>
+                            <input type="file" class="form-control ${not empty error ? 'is-invalid' : ''}" name="coverFile" id="cover" />
                         </div>
                         <div class="mb-3">
                             <form:label path="name">Nome</form:label>
@@ -47,7 +47,7 @@
                                 <form:input type="number" class="form-control" path="pages" id="pages" />
                             </div>
                             <div class="mb-3 flex-fill">
-                                <form:label for="chapters">Capítulos</form:label>
+                                <form:label path="chapters">Capítulos</form:label>
                                 <form:input type="number" class="form-control" path="chapters" id="chapters" />
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                             <form:input type="text" class="form-control" path="author" id="author" required="true" />
                         </div>
                         <div class="mb-3">
-                            <form:label for="publisher">Editora</form:label>
+                            <form:label path="publisher">Editora</form:label>
                             <form:input type="text" class="form-control" path="publisher" id="publisher" />
                         </div>
                         <div class="mb-3">

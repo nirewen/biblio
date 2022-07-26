@@ -29,7 +29,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h1>${book.getName()} <small>(${book.getYear()})</small></h1>
                         <c:if test="${user.getPermission() == 8}">
-                        <a href="/biblio/book/edit/${book.getId()}" class="btn btn-primary">Editar</a>
+                        <a href="/biblio/book/${book.getId()}/edit" class="btn btn-primary">Editar</a>
                         </c:if>
                     </div>
                     <span><em>${book.getAuthor()}</em></span>
