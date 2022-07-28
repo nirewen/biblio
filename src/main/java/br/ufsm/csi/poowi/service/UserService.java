@@ -13,14 +13,7 @@ public class UserService {
     private UserDAO dao;
 
     public boolean isAuthenticated(User user, String password) {
-        if (user == null)
-            return false;
-
-        if (user.getPassword().equals(password)) {
-            return true;
-        }
-
-        return false;
+        return user != null && user.getPassword().equals(password);
     }
 
     public User getUser(int userId) {
