@@ -30,7 +30,7 @@
                     <form:form method="post" action="./new" enctype="multipart/form-data" modelAttribute="book">
                         <div class="mb-3">
                             <form:label path="cover">Capa</form:label>
-                            <input type="file" class="form-control ${not empty error ? 'is-invalid' : ''}" name="coverFile" id="cover" />
+                            <input type="file" class="form-control ${not empty error ? 'is-invalid' : ''}" name="coverFile" id="cover" accept=".png,.jpg,.jpeg,.webp"/>
                         </div>
                         <div class="mb-3">
                             <form:label path="name">Nome</form:label>
