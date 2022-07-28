@@ -23,12 +23,14 @@ public class LoginController {
     private UserService userService;
 
     @GetMapping
-    protected String loginPage(HttpSession session) {
+    protected String loginPage(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
 
         if (user != null) {
             return "redirect:/dashboard";
         }
+
+        model.addAttribute("user", new User());
 
         session.removeAttribute("error");
 

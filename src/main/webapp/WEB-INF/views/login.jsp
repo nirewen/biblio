@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page isELIgnored="false" %>
+
 <html lang="pt-br">
     <head>
         <jsp:include page="../shared/head.jsp" />
@@ -14,14 +16,14 @@
                 <c:if test="${not empty redirectTo}">
                     <p>Você será redirecionado para <b>${redirectTo}</b></p>
                 </c:if>
-                <form method="post" action="./login">
+                <form:form method="post" action="./login" modelAttribute="user">
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" id="email" name="email" placeholder="insira o email" value="${email}" autofocus />
+                        <form:label path="email" class="form-label">Email</form:label>
+                        <form:input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}" path="email" placeholder="insira o email" value="${email}" autofocus="true" />
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Senha</label>
-                        <input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" id="password" name="password" placeholder="insira a senha" />
+                        <form:label path="password" class="form-label">Senha</form:label>
+                        <form:input type="password" class="form-control ${not empty error ? 'is-invalid' : ''}" path="password" placeholder="insira a senha" />
                     </div>
                      <c:if test="${not empty error}">
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
@@ -44,7 +46,7 @@
                         </div>
                     </c:if>
                     <button type="submit" class="btn btn-primary">Logar</button>
-                </form>
+                </form:form>
                 <b>Não possui uma conta? <a href="./signup">Criar conta</a></b>
             </div>
         </main>
