@@ -2,6 +2,7 @@ package br.ufsm.csi.poowi.controllers;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,8 @@ import br.ufsm.csi.poowi.util.UserException.Type;
 @Controller
 @RequestMapping("/dashboard")
 public class DashboardController {
-    private final LoanService loanService = new LoanService();
+    @Autowired
+    private LoanService loanService;
 
     @GetMapping
     protected String dashboardPage(HttpSession session, Model model) {

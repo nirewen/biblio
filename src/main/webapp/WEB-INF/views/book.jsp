@@ -40,7 +40,7 @@
                     <c:if test="${not empty user}">
                     <div class="d-flex justify-content-end mt-auto">
                         <c:choose>
-                            <c:when test="${not empty loan}">
+                            <c:when test="${not empty loan and loan.isActive()}">
                                 <a class="btn btn-primary" href="../loan/${loan.getId()}/postpone">Prorrogar</a>
                             </c:when>
                             <c:otherwise>

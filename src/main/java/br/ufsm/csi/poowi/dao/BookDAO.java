@@ -8,14 +8,22 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufsm.csi.poowi.model.Book;
-import br.ufsm.csi.poowi.util.DBConnect;
+import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import br.ufsm.csi.poowi.model.Book;
+
+@Component
 public class BookDAO {
+    @Autowired
+    private DataSource ds;
+
     public int nextId() {
         int last_value = -1;
 
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "SELECT last_value FROM books_id_seq;";
 
             Statement statement = con.createStatement();
@@ -32,7 +40,7 @@ public class BookDAO {
         return last_value + 1;
     }
 
-    private Book fromResultSet(ResultSet resultSet) throws SQLException {
+    public static Book fromResultSet(ResultSet resultSet) throws SQLException {
         Book book = new Book();
 
         book.setId(resultSet.getInt("id"));
@@ -51,7 +59,7 @@ public class BookDAO {
     public Book getBook(int id) {
         Book book = null;
 
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "SELECT * FROM books WHERE id = ?;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -60,7 +68,7 @@ public class BookDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                book = this.fromResultSet(resultSet);
+                book = fromResultSet(resultSet);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,7 +78,7 @@ public class BookDAO {
     }
 
     public boolean createBook(Book book) {
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             // possível bug: registrar o mesmo livro
             // (pode existir dois autores que fizeram um livro com mesmo nome)
             String sql = "INSERT INTO books (name, synopsis, pages, chapters, author, publisher, year, cover) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -96,7 +104,7 @@ public class BookDAO {
     }
 
     public boolean updateBook(int id, Book newBook) {
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "UPDATE books SET name = ?, synopsis = ?, pages = ?, chapters = ?, author = ?, publisher = ?, year = ?, cover = ? WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -121,7 +129,7 @@ public class BookDAO {
     }
 
     public boolean deleteBook(int id) {
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "DELETE FROM books WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -140,7 +148,7 @@ public class BookDAO {
     public List<Book> getBookList() {
         ArrayList<Book> books = new ArrayList<>();
 
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "SELECT * FROM books ORDER BY id ASC;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -148,7 +156,7 @@ public class BookDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                books.add(this.fromResultSet(resultSet));
+                books.add(fromResultSet(resultSet));
             }
         } catch (SQLException e) {
             e.printStackTrace();

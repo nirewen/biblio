@@ -5,6 +5,7 @@ import java.sql.Date;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +26,10 @@ import br.ufsm.csi.poowi.util.UserException.Type;
 @Controller
 @RequestMapping("/loan")
 public class LoanController extends HttpServlet {
-    private static final BookService bookService = new BookService();
-    private static final LoanService loanService = new LoanService();
+    @Autowired
+    private BookService bookService;
+    @Autowired
+    private LoanService loanService;
 
     @GetMapping("/{book_id}")
     protected String loanPage(HttpSession session, Model model, @PathVariable(name = "book_id") String id) {
@@ -43,7 +46,7 @@ public class LoanController extends HttpServlet {
             return "redirect:/login";
         }
 
-        Book book = bookService.getBook(Integer.parseInt(id));
+        Book book = this.bookService.getBook(Integer.parseInt(id));
 
         if (book == null) {
             // TODO: Redirect to 404
@@ -59,13 +62,13 @@ public class LoanController extends HttpServlet {
     @GetMapping("/{loan_id}/postpone")
     public String postponeLoan(HttpSession session, Model model,
             @PathVariable(value = "loan_id", required = true) String id) {
-        Loan loan = loanService.getLoan(Integer.parseInt(id));
+        Loan loan = this.loanService.getLoan(Integer.parseInt(id));
 
         if (loan == null) {
             return "redirect:/dashboard";
         }
 
-        Book book = bookService.getBook(loan.getBookId());
+        Book book = this.bookService.getBook(loan.getBookId());
 
         model.addAttribute("loan", loan);
         model.addAttribute("book", book);
@@ -76,7 +79,7 @@ public class LoanController extends HttpServlet {
     @GetMapping("/{loan_id}/return")
     public String returnBook(HttpSession session, Model model,
             @PathVariable(value = "loan_id", required = true) Integer id) {
-        loanService.deleteLoan(id);
+        this.loanService.deleteLoan(id);
 
         return "redirect:/dashboard";
     }
@@ -99,7 +102,7 @@ public class LoanController extends HttpServlet {
 
         Date devolution = loan.getDevolutionDate();
 
-        Book book = bookService.getBook(id);
+        Book book = this.bookService.getBook(id);
 
         if (book == null) {
             // TODO: Redirect to 404
@@ -110,7 +113,7 @@ public class LoanController extends HttpServlet {
         loan.setBookId(book.getId());
         loan.setDevolutionDate(devolution);
 
-        boolean success = loanService.createLoan(loan);
+        boolean success = this.loanService.createLoan(loan);
 
         if (success) {
             return "redirect:/dashboard";
@@ -136,7 +139,7 @@ public class LoanController extends HttpServlet {
             return "redirect:/login";
         }
 
-        boolean success = loanService.editLoan(loan);
+        boolean success = this.loanService.editLoan(loan);
 
         if (success) {
             return "redirect:/dashboard";

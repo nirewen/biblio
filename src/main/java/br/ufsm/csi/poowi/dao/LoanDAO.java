@@ -7,13 +7,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Component;
+
 import br.ufsm.csi.poowi.model.Book;
 import br.ufsm.csi.poowi.model.Loan;
 import br.ufsm.csi.poowi.model.User;
-import br.ufsm.csi.poowi.util.DBConnect;
 
+@Component
 public class LoanDAO {
-    public Loan fromResultSet(ResultSet resultSet) throws SQLException {
+    @Autowired
+    private DataSource ds;
+
+    public static Loan fromResultSet(ResultSet resultSet) throws SQLException {
         Loan loan = new Loan();
 
         loan.setId(resultSet.getInt("id"));
@@ -22,6 +32,7 @@ public class LoanDAO {
         loan.setDate(resultSet.getDate("date"));
         loan.setDevolutionDate(resultSet.getDate("devolution_date"));
         loan.setActive(resultSet.getBoolean("active"));
+        loan.setBook(BookDAO.fromResultSet(resultSet));
 
         return loan;
     }
@@ -32,7 +43,7 @@ public class LoanDAO {
         if (user == null)
             return null;
 
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "SELECT * FROM loans WHERE book_id = ? AND user_id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -42,7 +53,7 @@ public class LoanDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                loan = this.fromResultSet(resultSet);
+                loan = fromResultSet(resultSet);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,7 +65,7 @@ public class LoanDAO {
     public Loan getLoan(int id) {
         Loan loan = null;
 
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "SELECT * FROM loans WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -63,7 +74,7 @@ public class LoanDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                loan = this.fromResultSet(resultSet);
+                loan = fromResultSet(resultSet);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -73,16 +84,18 @@ public class LoanDAO {
     }
 
     public boolean createLoan(Loan loan) {
-        try (Connection con = new DBConnect().getConnection()) {
-            String sql = "INSERT INTO loans (user_id, book_id, date, devolution_date) VALUES (?, ?, ?, ?)";
+        try (Connection con = this.ds.getConnection()) {
+            NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(this.ds);
+            MapSqlParameterSource paramSource = new MapSqlParameterSource();
 
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setInt(1, loan.getUserId());
-            preparedStatement.setInt(2, loan.getBookId());
-            preparedStatement.setDate(3, loan.getDate());
-            preparedStatement.setDate(4, loan.getDevolutionDate());
+            paramSource.addValue("user_id", loan.getUserId());
+            paramSource.addValue("book_id", loan.getBookId());
+            paramSource.addValue("date", loan.getDate());
+            paramSource.addValue("devolution", loan.getDevolutionDate());
 
-            preparedStatement.execute();
+            String sql = "INSERT INTO loans (user_id, book_id, date, devolution_date) VALUES (:user_id, :book_id, :date, :devolution) ON CONFLICT (book_id, user_id) DO UPDATE SET active = true, date = :date, devolution_date = :devolution;";
+
+            jdbcTemplate.queryForRowSet(sql, paramSource);
 
             return true;
         } catch (SQLException e) {
@@ -96,7 +109,7 @@ public class LoanDAO {
     }
 
     public boolean editLoan(Loan loan) {
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "UPDATE loans SET devolution_date = ? WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -114,7 +127,7 @@ public class LoanDAO {
     }
 
     public boolean deleteLoan(int id) {
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "UPDATE loans SET active = false WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -133,7 +146,7 @@ public class LoanDAO {
     public List<Loan> getLoanList(int user) {
         List<Loan> loans = new ArrayList<>();
 
-        try (Connection con = new DBConnect().getConnection()) {
+        try (Connection con = this.ds.getConnection()) {
             String sql = "SELECT * FROM loans LEFT JOIN books ON loans.book_id = books.id WHERE user_id = ? ORDER BY loans.active DESC, loans.devolution_date DESC;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -142,7 +155,7 @@ public class LoanDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                loans.add(this.fromResultSet(resultSet));
+                loans.add(fromResultSet(resultSet));
             }
         } catch (SQLException e) {
             e.printStackTrace();

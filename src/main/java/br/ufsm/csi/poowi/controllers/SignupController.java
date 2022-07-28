@@ -2,6 +2,7 @@ package br.ufsm.csi.poowi.controllers;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,14 +10,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.service.UserService;
 import br.ufsm.csi.poowi.util.UserException;
 
 @Controller
 @RequestMapping("/signup")
 public class SignupController {
-    private final UserDAO dao = new UserDAO();
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     protected String signUpPage(HttpSession session, Model model) {
@@ -34,7 +36,7 @@ public class SignupController {
     @PostMapping
     protected String signUp(Model model, @ModelAttribute("newUser") User user) {
         try {
-            boolean success = dao.createUser(user.getEmail(), user.getPassword());
+            boolean success = userService.createUser(user.getEmail(), user.getPassword());
 
             if (success) {
                 // TODO: session!

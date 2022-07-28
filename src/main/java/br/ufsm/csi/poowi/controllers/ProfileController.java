@@ -1,8 +1,8 @@
 package br.ufsm.csi.poowi.controllers;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,15 +10,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.ufsm.csi.poowi.dao.UserDAO;
 import br.ufsm.csi.poowi.model.User;
+import br.ufsm.csi.poowi.service.UserService;
 import br.ufsm.csi.poowi.util.EditedUser;
 import br.ufsm.csi.poowi.util.UserException;
 import br.ufsm.csi.poowi.util.UserException.Type;
 
 @Controller
 @RequestMapping("/profile")
-public class ProfileController extends HttpServlet {
+public class ProfileController {
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     protected String profilePage(HttpSession session) {
@@ -77,10 +79,8 @@ public class ProfileController extends HttpServlet {
 
         newUser.setPassword(newUser.getNewPassword().isEmpty() ? newUser.getPassword() : newUser.getNewPassword());
 
-        UserDAO dao = new UserDAO();
-
         try {
-            dao.updateUser(newUser);
+            this.userService.updateUser(newUser);
 
             session.setAttribute("user", newUser);
             session.setAttribute("message", "Usuário atualizado");

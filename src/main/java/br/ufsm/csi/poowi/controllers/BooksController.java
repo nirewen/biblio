@@ -2,6 +2,7 @@ package br.ufsm.csi.poowi.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +14,12 @@ import br.ufsm.csi.poowi.service.BookService;
 @Controller
 @RequestMapping("/books")
 public class BooksController {
-    private static final BookService bookService = new BookService();
+    @Autowired
+    private BookService bookService;
 
     @GetMapping
     protected String booksPage(Model model) {
-        List<Book> books = bookService.getBookList();
+        List<Book> books = this.bookService.getBookList();
 
         model.addAttribute("books", books);
 

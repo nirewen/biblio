@@ -2,13 +2,7 @@ package br.ufsm.csi.poowi.model;
 
 import java.sql.Date;
 
-import br.ufsm.csi.poowi.dao.BookDAO;
-import br.ufsm.csi.poowi.dao.UserDAO;
-
 public class Loan {
-    private UserDAO userDAO = new UserDAO();
-    private BookDAO bookDAO = new BookDAO();
-
     private int id;
     private int userId;
     private int bookId;
@@ -56,12 +50,18 @@ public class Loan {
 
     public void setUserId(int value) {
         this.userId = value;
-        this.user = userDAO.getUser(this.userId);
+    }
+
+    public void setUser(User value) {
+        this.user = value;
     }
 
     public void setBookId(int value) {
         this.bookId = value;
-        this.book = bookDAO.getBook(this.bookId);
+    }
+
+    public void setBook(Book value) {
+        this.book = value;
     }
 
     public void setDate(Date value) {
