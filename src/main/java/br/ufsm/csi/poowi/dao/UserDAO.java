@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.ufsm.csi.poowi.model.User;
@@ -15,8 +14,11 @@ import br.ufsm.csi.poowi.util.UserException;
 
 @Component
 public class UserDAO {
-    @Autowired
-    private DataSource ds;
+    private DataSource dataSource;
+
+    public UserDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public static User fromResultSet(ResultSet resultSet) throws SQLException {
         User user = new User();
@@ -34,7 +36,7 @@ public class UserDAO {
     public User getUser(int id) {
         User user = null;
 
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "SELECT * FROM users WHERE id = ?;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -55,7 +57,7 @@ public class UserDAO {
     public User getUser(String email) {
         User user = null;
 
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "SELECT * FROM users WHERE email = ?;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -74,7 +76,7 @@ public class UserDAO {
     }
 
     public boolean createUser(String email, String password) throws UserException {
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "INSERT INTO users (email, password, permission) VALUES (?, ?, 16)";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -96,7 +98,7 @@ public class UserDAO {
 
     public boolean updateUser(User newUser)
             throws UserException {
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "UPDATE users SET email = ?, password = ?, name = ?, date_of_birth = ? WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);

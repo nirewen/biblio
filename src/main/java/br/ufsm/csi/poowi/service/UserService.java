@@ -1,6 +1,5 @@
 package br.ufsm.csi.poowi.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.ufsm.csi.poowi.dao.UserDAO;
@@ -9,8 +8,11 @@ import br.ufsm.csi.poowi.util.UserException;
 
 @Service
 public class UserService {
-    @Autowired
     private UserDAO dao;
+
+    public UserService(UserDAO dao) {
+        this.dao = dao;
+    }
 
     public boolean isAuthenticated(User user, String password) {
         return user != null && user.getPassword().equals(password);

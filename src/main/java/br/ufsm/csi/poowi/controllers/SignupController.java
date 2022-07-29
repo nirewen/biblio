@@ -2,7 +2,6 @@ package br.ufsm.csi.poowi.controllers;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +16,11 @@ import br.ufsm.csi.poowi.util.UserException;
 @Controller
 @RequestMapping("/signup")
 public class SignupController {
-    @Autowired
     private UserService userService;
+
+    public SignupController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     protected String signUpPage(HttpSession session, Model model) {

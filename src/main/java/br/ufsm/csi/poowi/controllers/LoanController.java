@@ -5,7 +5,6 @@ import java.sql.Date;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +25,13 @@ import br.ufsm.csi.poowi.util.UserException.Type;
 @Controller
 @RequestMapping("/loan")
 public class LoanController extends HttpServlet {
-    @Autowired
     private BookService bookService;
-    @Autowired
+
+    public LoanController(BookService bookService, LoanService loanService) {
+        this.bookService = bookService;
+        this.loanService = loanService;
+    }
+
     private LoanService loanService;
 
     @GetMapping("/{book_id}")

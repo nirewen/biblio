@@ -2,7 +2,6 @@ package br.ufsm.csi.poowi.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.ufsm.csi.poowi.dao.LoanDAO;
@@ -12,8 +11,11 @@ import br.ufsm.csi.poowi.model.User;
 
 @Service
 public class LoanService {
-    @Autowired
     private LoanDAO dao;
+
+    public LoanService(LoanDAO dao) {
+        this.dao = dao;
+    }
 
     public Loan getLoan(User user, Book book) {
         return dao.getLoan(user, book);

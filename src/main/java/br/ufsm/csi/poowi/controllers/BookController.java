@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,10 +30,13 @@ import br.ufsm.csi.poowi.util.UserException.Type;
 @Controller
 @RequestMapping("/book")
 public class BookController extends HttpServlet {
-    @Autowired
     private BookService bookService;
-    @Autowired
     private LoanService loanService;
+
+    public BookController(BookService bookService, LoanService loanService) {
+        this.bookService = bookService;
+        this.loanService = loanService;
+    }
 
     private final ArrayList<String> VALID_EXTENSIONS = new ArrayList<String>() {
         {

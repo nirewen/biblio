@@ -10,20 +10,22 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.ufsm.csi.poowi.model.Book;
 
 @Component
 public class BookDAO {
-    @Autowired
-    private DataSource ds;
+    private DataSource dataSource;
+
+    public BookDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public int nextId() {
         int last_value = -1;
 
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "SELECT last_value FROM books_id_seq;";
 
             Statement statement = con.createStatement();
@@ -59,7 +61,7 @@ public class BookDAO {
     public Book getBook(int id) {
         Book book = null;
 
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "SELECT * FROM books WHERE id = ?;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -78,7 +80,7 @@ public class BookDAO {
     }
 
     public boolean createBook(Book book) {
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             // possível bug: registrar o mesmo livro
             // (pode existir dois autores que fizeram um livro com mesmo nome)
             String sql = "INSERT INTO books (name, synopsis, pages, chapters, author, publisher, year, cover) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -104,7 +106,7 @@ public class BookDAO {
     }
 
     public boolean updateBook(int id, Book newBook) {
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "UPDATE books SET name = ?, synopsis = ?, pages = ?, chapters = ?, author = ?, publisher = ?, year = ?, cover = ? WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -129,7 +131,7 @@ public class BookDAO {
     }
 
     public boolean deleteBook(int id) {
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "DELETE FROM books WHERE id = ?";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -148,7 +150,7 @@ public class BookDAO {
     public List<Book> getBookList() {
         ArrayList<Book> books = new ArrayList<>();
 
-        try (Connection con = this.ds.getConnection()) {
+        try (Connection con = this.dataSource.getConnection()) {
             String sql = "SELECT * FROM books ORDER BY id ASC;";
 
             PreparedStatement preparedStatement = con.prepareStatement(sql);
