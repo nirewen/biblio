@@ -64,7 +64,7 @@
                         </div>
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">Adicionar</button>
-                            <a href="./books" class="btn btn-light">Voltar</a>
+                            <a href="../books" class="btn btn-light">Voltar</a>
                         </div>
                     </form:form>
                 </div>
