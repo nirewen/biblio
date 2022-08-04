@@ -49,7 +49,7 @@ public class BookController extends HttpServlet {
 
     @GetMapping("/{id}")
     protected String getBookById(HttpSession session, Model model, @PathVariable Integer id) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         Book book = bookService.getBook(id);
 
@@ -69,11 +69,11 @@ public class BookController extends HttpServlet {
 
     @GetMapping("/new")
     protected String newBookPage(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/book/new");
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/book/new");
 
             return "redirect:/login";
         }
@@ -87,11 +87,11 @@ public class BookController extends HttpServlet {
     protected String newBook(HttpSession session, @RequestParam("coverFile") MultipartFile coverFile,
             @ModelAttribute("book") Book book)
             throws IOException {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/book/new");
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/book/new");
 
             return "redirect:/login";
         }
@@ -100,7 +100,7 @@ public class BookController extends HttpServlet {
         String ext = fileName.substring(fileName.lastIndexOf('.') + 1);
 
         if (!VALID_EXTENSIONS.contains(ext)) {
-            session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
+            session.setAttribute("$error", new BookException(BookException.Type.INVALID_COVER_TYPE,
                     "Tipo de arquivo para capa inválido!"));
 
             return "redirect:/book/new";
@@ -123,11 +123,11 @@ public class BookController extends HttpServlet {
 
     @GetMapping("/{id}/edit")
     protected String editBookPage(HttpSession session, Model model, @PathVariable Integer id) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/book/" + id + "/edit");
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/book/" + id + "/edit");
 
             return "redirect:/login";
         }
@@ -142,11 +142,11 @@ public class BookController extends HttpServlet {
     @PostMapping("/{id}/edit")
     protected String editBook(HttpSession session, MultipartFile coverFile, @ModelAttribute("book") Book book)
             throws IOException {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/book/" + book.getId() + "/edit");
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/book/" + book.getId() + "/edit");
 
             return "redirect:/login";
         }
@@ -156,7 +156,7 @@ public class BookController extends HttpServlet {
 
         if (!fileName.isEmpty()) {
             if (!VALID_EXTENSIONS.contains(ext)) {
-                session.setAttribute("error", new BookException(BookException.Type.INVALID_COVER_TYPE,
+                session.setAttribute("$error", new BookException(BookException.Type.INVALID_COVER_TYPE,
                         "Tipo de arquivo para capa inválido!"));
 
                 return "redirect:/book/" + book.getId() + "/edit";

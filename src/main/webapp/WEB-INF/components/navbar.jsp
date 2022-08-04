@@ -19,23 +19,30 @@
                     <a class="${currentPage == '/biblio/books' ? 'active' : ''} btn" href="/biblio/books">Livros</a>
                 </li>
             </ul>
-            <c:if test="${not empty user}">
-                <ul class="navbar-nav d-flex gap-2 mb-2 mb-lg-0 ms-lg-auto">
-                    <li class="nav-item">
-                        <a href="/biblio/dashboard" class="${currentPage == '/biblio/dashboard' ? 'active' : ''} btn">Dashboard</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            ${user.getName()}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/biblio/profile">Perfil</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/biblio/logout">Sair</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </c:if>
+            <ul class="navbar-nav d-flex gap-2 mb-2 mb-lg-0 ms-lg-auto">
+                <c:choose>
+                    <c:when test="${not empty $user}">
+                        <li class="nav-item">
+                            <a href="/biblio/dashboard" class="${currentPage == '/biblio/dashboard' ? 'active' : ''} btn">Dashboard</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                ${$user.getName()}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/biblio/profile">Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/biblio/logout">Sair</a></li>
+                            </ul>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="nav-item">
+                            <a href="/biblio/login" class="${currentPage == '/biblio/login' ? 'active' : ''} btn btn-primary">Entrar</a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+            </ul>
         </div>
     </div>
 </nav>

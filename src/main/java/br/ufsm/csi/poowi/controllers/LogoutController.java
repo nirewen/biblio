@@ -15,7 +15,7 @@ public class LogoutController extends HttpServlet {
 
     @GetMapping
     public String logoutPage(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user != null) {
             session.invalidate();

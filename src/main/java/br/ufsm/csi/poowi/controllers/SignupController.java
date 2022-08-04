@@ -24,7 +24,7 @@ public class SignupController {
 
     @GetMapping
     protected String signUpPage(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user != null) {
             return "redirect:/dashboard";

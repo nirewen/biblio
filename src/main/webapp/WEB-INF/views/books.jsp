@@ -12,7 +12,7 @@
             <div class="d-flex flex-column w-100 px-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <h1>Livros</h1>
-                    <c:if test="${user.getPermission() == 8}">
+                    <c:if test="${$user.getPermission() == 8}">
                     <a href="./book/new" class="btn btn-primary">+ Livro</a>
                     </c:if>
                 </div>

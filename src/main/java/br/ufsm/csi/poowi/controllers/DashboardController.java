@@ -23,11 +23,11 @@ public class DashboardController {
 
     @GetMapping
     protected String dashboardPage(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
-            session.setAttribute("redirectTo", "/dashboard");
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/dashboard");
 
             return "redirect:/login";
         }

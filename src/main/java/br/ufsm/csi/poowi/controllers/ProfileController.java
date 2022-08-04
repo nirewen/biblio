@@ -26,12 +26,12 @@ public class ProfileController {
 
     @GetMapping
     protected String profilePage(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
-            session.setAttribute("redirectTo", "/profile");
+            session.setAttribute("$redirectTo", "/profile");
 
             return "redirect:/login";
         }
@@ -43,12 +43,12 @@ public class ProfileController {
 
     @GetMapping("/edit")
     protected String editUserPage(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
-            session.setAttribute("redirectTo", "/profile/edit");
+            session.setAttribute("$redirectTo", "/profile/edit");
 
             return "redirect:/login";
         }
@@ -62,12 +62,12 @@ public class ProfileController {
 
     @PostMapping("/edit")
     protected String editUser(HttpSession session, Model model, @ModelAttribute("user") EditedUser newUser) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
-            session.setAttribute("redirectTo", "/profile");
+            session.setAttribute("$redirectTo", "/profile");
 
             return "redirect:/login";
         }
@@ -84,8 +84,8 @@ public class ProfileController {
         try {
             this.userService.updateUser(newUser);
 
-            session.setAttribute("user", newUser);
-            session.setAttribute("message", "Usuário atualizado");
+            session.setAttribute("$user", newUser);
+            session.setAttribute("$message", "Usuário atualizado");
 
             return "redirect:/profile";
         } catch (UserException e) {

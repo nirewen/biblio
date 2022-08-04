@@ -26,7 +26,7 @@ public class LoginController {
 
     @GetMapping
     protected String loginPage(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user != null) {
             return "redirect:/dashboard";
@@ -41,12 +41,12 @@ public class LoginController {
 
     @PostMapping
     protected String login(HttpSession session, Model model, @ModelAttribute User loginInfo) {
-        String redirectTo = StringUtils.defaultIfEmpty((String) session.getAttribute("redirectTo"), "/dashboard");
+        String redirectTo = StringUtils.defaultIfEmpty((String) session.getAttribute("$redirectTo"), "/dashboard");
 
         User user = this.userService.getUserByEmail(loginInfo.getEmail());
 
         if (this.userService.isAuthenticated(user, loginInfo.getPassword())) {
-            session.setAttribute("user", user);
+            session.setAttribute("$user", user);
 
             return "redirect:" + redirectTo;
         } else {

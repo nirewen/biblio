@@ -36,15 +36,15 @@ public class LoanController extends HttpServlet {
 
     @GetMapping("/{book_id}")
     protected String loanPage(HttpSession session, Model model, @PathVariable(name = "book_id") String id) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (id == null || id.isEmpty()) {
             return "redirect:/books";
         }
 
         if (user == null) {
-            session.setAttribute("redirectTo", "/loan/" + id);
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/loan/" + id);
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
             return "redirect:/login";
         }
@@ -90,15 +90,15 @@ public class LoanController extends HttpServlet {
     @PostMapping("/{id}/new")
     protected String newLoan(HttpSession session, Model model, @PathVariable(value = "id") Integer id,
             @ModelAttribute Loan loan) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
             String redirectTo = "/loan";
 
             redirectTo += "/" + id + "/new";
 
-            session.setAttribute("redirectTo", redirectTo);
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", redirectTo);
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
             return "redirect:/login";
         }
@@ -121,7 +121,7 @@ public class LoanController extends HttpServlet {
         if (success) {
             return "redirect:/dashboard";
         } else {
-            session.setAttribute("error",
+            session.setAttribute("$error",
                     new LoanException(LoanException.Type.BOOK_ALREADY_LOANED, "Livro já alugado!"));
         }
 
@@ -133,11 +133,11 @@ public class LoanController extends HttpServlet {
     @PostMapping("/{loan_id}/postpone")
     public String editLoan(HttpSession session, Model model, @PathVariable(value = "loan_id") String loanId,
             @ModelAttribute Loan loan) {
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("$user");
 
         if (user == null) {
-            session.setAttribute("redirectTo", "/loan" + "/" + loanId + "/postpone");
-            session.setAttribute("error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/loan" + "/" + loanId + "/postpone");
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
 
             return "redirect:/login";
         }
