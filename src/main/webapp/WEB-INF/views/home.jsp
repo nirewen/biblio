@@ -9,6 +9,8 @@
     <body>
         <jsp:include page="../components/navbar.jsp" />
         
-        <h1>Hello World!</h1>
+        <div class="container">
+            <h1>Hello World!</h1>
+        </div>
     </body>
 </html>
