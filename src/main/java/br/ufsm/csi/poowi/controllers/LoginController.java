@@ -34,8 +34,6 @@ public class LoginController {
 
         model.addAttribute("user", new User());
 
-        session.removeAttribute("error");
-
         return "login";
     }
 
@@ -47,6 +45,8 @@ public class LoginController {
 
         if (this.userService.isAuthenticated(user, loginInfo.getPassword())) {
             session.setAttribute("$user", user);
+
+            session.removeAttribute("$error");
 
             return "redirect:" + redirectTo;
         } else {
