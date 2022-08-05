@@ -116,9 +116,15 @@ public class BookController extends HttpServlet {
 
         book.setCover(cover);
 
-        bookService.createBook(book);
+        boolean success = bookService.createBook(book);
 
-        return "redirect:/books";
+        if (success) {
+            session.removeAttribute("$error");
+
+            return "redirect:/books";
+        }
+
+        return "redirect:/book/new";
     }
 
     @GetMapping("/{id}/edit")
@@ -177,9 +183,15 @@ public class BookController extends HttpServlet {
             book.setCover(oldBook.getCover());
         }
 
-        bookService.updateBook(book.getId(), book);
+        boolean success = bookService.updateBook(book.getId(), book);
 
-        return "redirect:/book/" + book.getId();
+        if (success) {
+            session.removeAttribute("$error");
+
+            return "redirect:/book/" + book.getId();
+        }
+
+        return "redirect:/book/" + book.getId() + "/edit";
     }
 
     @GetMapping("/{id}/delete")
