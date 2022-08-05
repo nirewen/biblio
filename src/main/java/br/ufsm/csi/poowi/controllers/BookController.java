@@ -181,4 +181,25 @@ public class BookController extends HttpServlet {
 
         return "redirect:/book/" + book.getId();
     }
+
+    @GetMapping("/{id}/delete")
+    protected String deleteBook(HttpSession session, @PathVariable Integer id) {
+        User user = (User) session.getAttribute("$user");
+
+        if (user == null) {
+            session.setAttribute("$error", new UserException(Type.LOGGED_OUT, "Não logado"));
+            session.setAttribute("$redirectTo", "/book/" + id + "/edit");
+
+            return "redirect:/login";
+        }
+
+        boolean success = this.bookService.deleteBook(id);
+
+        if (success) {
+            return "redirect:/books";
+        }
+
+        return "redirect:/book/" + id + "/edit";
+
+    }
 }

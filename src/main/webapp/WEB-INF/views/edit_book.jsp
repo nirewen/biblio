@@ -65,7 +65,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-primary">Salvar</button>
-                            <a class="btn btn-danger" href="./book?id=${book.getId()}&option=delete" onclick="return confirm('Tem certeza que quer excluir esse livro?')">Excluir livro</a>
+                            <a class="btn btn-danger" href="../../book/${book.getId()}/delete" onclick="return confirm('Tem certeza que quer excluir esse livro?')">Excluir livro</a>
                         </div>
                     </form:form>
                 </div>
